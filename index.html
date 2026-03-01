@@ -1,0 +1,129 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Login</title>
+  <meta name="color-scheme" content="dark light">
+  <style>
+    :root{
+      --bg1:#070b16; --bg2:#0b1633;
+      --glass:rgba(255,255,255,.10);
+      --glass2:rgba(255,255,255,.14);
+      --stroke:rgba(255,255,255,.16);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.70);
+      --shadow:0 25px 70px rgba(0,0,0,.45);
+      --radius:22px;
+      --ring:0 0 0 3px rgba(255,255,255,.10);
+      --ok:rgba(60,255,160,.85);
+      --bad:rgba(255,90,110,.9);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 15%, rgba(120,140,255,.35), transparent 55%),
+        radial-gradient(1100px 650px at 85% 25%, rgba(255,110,190,.22), transparent 60%),
+        radial-gradient(900px 600px at 50% 95%, rgba(90,255,210,.16), transparent 55%),
+        linear-gradient(160deg,var(--bg1),var(--bg2));
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+    .card{
+      width:min(560px,100%);
+      border-radius:var(--radius);
+      background:linear-gradient(180deg,var(--glass2),var(--glass));
+      border:1px solid var(--stroke);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(16px);
+      padding:22px;
+    }
+    h1{margin:0;font-size:18px;font-weight:900}
+    p{margin:8px 0 18px;color:var(--muted);font-size:13px}
+    .label{font-size:12px;color:rgba(255,255,255,.75);margin:10px 0 7px}
+    .input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      outline:none;
+    }
+    .input:focus{box-shadow:var(--ring)}
+    .btn{
+      margin-top:14px;
+      width:100%;
+      border:none;
+      padding:12px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:900;
+      color:#0b0f1a;
+      background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.70));
+    }
+    .msg{margin-top:12px;font-size:12px;min-height:16px;color:var(--muted)}
+    .msg.ok{color:var(--ok)} .msg.bad{color:var(--bad)}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Plataforma Estudiantil</h1>
+    <p>Ingresá con tu correo y contraseña.</p>
+
+    <div class="label">Correo</div>
+    <input id="email" class="input" placeholder="ej: alumno1@cecnic.com" autocomplete="username">
+
+    <div class="label">Contraseña</div>
+    <input id="pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password">
+
+    <button id="loginBtn" class="btn">Entrar</button>
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <script>
+    const $ = (id)=>document.getElementById(id);
+    if(localStorage.getItem("session_email")) location.href="dashboard.html";
+
+    function setMsg(t,type=""){ $("msg").textContent=t||""; $("msg").className="msg "+type; }
+
+    async function loadUsers(){
+      const r = await fetch("apartado.json",{cache:"no-store"});
+      if(!r.ok) throw new Error("apartado.json");
+      const d = await r.json();
+      return d.users || [];
+    }
+
+    async function login(){
+      const email = $("email").value.trim().toLowerCase();
+      const pass = $("pass").value;
+
+      if(!email || !pass){ setMsg("Faltan datos.","bad"); return; }
+
+      setMsg("Verificando...");
+      let users=[];
+      try{ users = await loadUsers(); }catch{ setMsg("No se pudo leer apartado.json","bad"); return; }
+
+      const u = users.find(x => String(x.email).toLowerCase()===email && String(x.pass)===String(pass));
+      if(!u){ setMsg("Credenciales incorrectas.","bad"); return; }
+
+      localStorage.setItem("session_email", email);
+      localStorage.setItem("session_role", u.role || "estudiante");
+      localStorage.setItem("session_name", u.name || email);
+
+      setMsg("Entrando...","ok");
+      setTimeout(()=>location.href="dashboard.html",250);
+    }
+
+    $("loginBtn").onclick = login;
+    $("pass").addEventListener("keydown",(e)=>{ if(e.key==="Enter") login(); });
+    $("email").addEventListener("keydown",(e)=>{ if(e.key==="Enter") login(); });
+  </script>
+</body>
+</html>
