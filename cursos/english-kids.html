@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Curso Ingles Kids</title>
+<meta name="color-scheme" content="dark light">
+<style>
+:root{
+  --bg1:#070b16; --bg2:#0b1633;
+  --glass:rgba(255,255,255,.10);
+  --glass2:rgba(255,255,255,.14);
+  --stroke:rgba(255,255,255,.16);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.70);
+  --shadow:0 25px 70px rgba(0,0,0,.45);
+  --radius:22px;
+  --ok:rgba(60,255,160,.85);
+  --bad:rgba(255,90,110,.9);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,Segoe UI,Roboto,Arial;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 700px at 20% 15%, rgba(120,140,255,.35), transparent 55%),
+    radial-gradient(1100px 650px at 85% 25%, rgba(255,110,190,.22), transparent 60%),
+    radial-gradient(900px 600px at 50% 95%, rgba(90,255,210,.16), transparent 55%),
+    linear-gradient(160deg,var(--bg1),var(--bg2));
+  padding:16px;
+}
+.wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.top{
+  border-radius:var(--radius);
+  background:linear-gradient(180deg,var(--glass2),var(--glass));
+  border:1px solid var(--stroke);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(16px);
+  padding:14px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.title b{display:block;font-size:16px}
+.title span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.roundBack{
+  width:42px;height:42px;border-radius:999px;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  cursor:pointer;
+}
+.btn{
+  border:none; cursor:pointer;
+  padding:10px 12px;
+  border-radius:14px;
+  font-weight:900;
+  color:#0b0f1a;
+  background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.70));
+}
+.btn.ghost{
+  background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.86);
+  border:1px solid rgba(255,255,255,.14);
+}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:14px;
+  align-items:start;
+}
+.panel{
+  border-radius:var(--radius);
+  background:linear-gradient(180deg,var(--glass2),var(--glass));
+  border:1px solid var(--stroke);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(16px);
+  overflow:hidden;
+}
+.head{
+  padding:12px 14px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+  background:rgba(0,0,0,.18);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.head b{font-size:14px}
+.body{padding:14px}
+.list{display:flex;flex-direction:column;gap:10px}
+.card{
+  padding:12px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.14);
+  cursor:pointer;
+  transition:transform .15s ease, background .15s ease;
+}
+.card:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+.card b{display:block;font-size:13px}
+.card span{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.35;
+}
+.status{font-size:12px;color:var(--muted);min-height:16px;margin-top:10px}
+.status.ok{color:var(--ok)} .status.bad{color:var(--bad)}
+
+.modal{
+  position:fixed; inset:0;
+  display:none; place-items:center;
+  background: rgba(0,0,0,.60);
+  backdrop-filter: blur(10px);
+  padding:18px;
+}
+.modal.show{display:grid}
+.paper{
+  width:min(980px, 100%);
+  max-height: 86vh;
+  overflow:auto;
+  border-radius: 22px;
+  border:1px solid rgba(255,255,255,.14);
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+}
+.paperTop{
+  position:sticky; top:0;
+  padding:12px 14px;
+  background: rgba(0,0,0,.28);
+  border-bottom:1px solid rgba(255,255,255,.10);
+  display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+}
+.paperBody{padding:16px; white-space:pre-wrap; line-height:1.55}
+.input,.area{
+  width:100%; padding:12px 14px; border-radius:14px;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06);
+  color:var(--text); outline:none;
+}
+.area{min-height:140px; resize:vertical}
+.sep{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+.comment{
+  padding:10px 12px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.14);
+}
+.comment b{display:block;font-size:12px}
+.comment span{display:block;color:var(--muted);font-size:12px;margin-top:6px;white-space:pre-wrap}
+@media (max-width:980px){
+  .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="row">
+      <div class="roundBack" id="back" title="Dashboard">←</div>
+      <div class="title">
+        <b id="courseName">Curso</b>
+        <span id="courseMeta">—</span>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn" id="newAnn" style="display:none">+ Aviso</button>
+      <button class="btn" id="newAct" style="display:none">+ Actividad</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="panel">
+      <div class="head">
+        <b>Avisos</b>
+        <span id="annCount" style="color:rgba(255,255,255,.65);font-size:12px">—</span>
+      </div>
+      <div class="body">
+        <div class="list" id="annList"></div>
+        <div class="status" id="annStatus"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="head">
+        <b>Actividades</b>
+        <span id="actCount" style="color:rgba(255,255,255,.65);font-size:12px">—</span>
+      </div>
+      <div class="body">
+        <div class="list" id="actList"></div>
+        <div class="status" id="actStatus"></div>
+      </div>
+    </section>
+  </div>
+
+</div>
+
+<!-- Ver aviso/actividad -->
+<div class="modal" id="viewM">
+  <div class="paper">
+    <div class="paperTop">
+      <b id="vTitle">—</b>
+      <div class="row">
+        <button class="btn ghost" id="vClose">Cerrar</button>
+      </div>
+    </div>
+    <div class="paperBody">
+      <div id="vBody"></div>
+
+      <div id="forumArea" style="display:none">
+        <div class="sep"></div>
+        <b style="display:block;margin-bottom:10px">Comentarios</b>
+        <div id="cList" style="display:grid;gap:10px"></div>
+
+        <div class="sep"></div>
+        <textarea class="area" id="cText" placeholder="Escribí un comentario..."></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="cSend">Comentar</button>
+          <div class="status" id="cStatus"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Nuevo aviso -->
+<div class="modal" id="annM">
+  <div class="paper">
+    <div class="paperTop">
+      <b>Nuevo aviso</b>
+      <div class="row">
+        <button class="btn ghost" id="annCancel">Cancelar</button>
+        <button class="btn" id="annSave">Guardar</button>
+      </div>
+    </div>
+    <div class="paperBody">
+      <input class="input" id="annTitle" placeholder="Título">
+      <textarea class="area" id="annBody" placeholder="Descripción..."></textarea>
+      <div class="status" id="annSaveStatus"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Nueva actividad -->
+<div class="modal" id="actM">
+  <div class="paper">
+    <div class="paperTop">
+      <b>Nueva actividad</b>
+      <div class="row">
+        <button class="btn ghost" id="actCancel">Cancelar</button>
+        <button class="btn" id="actSave">Guardar</button>
+      </div>
+    </div>
+    <div class="paperBody">
+      <input class="input" id="actTitle" placeholder="Título">
+      <textarea class="area" id="actBody" placeholder="Descripción completa..."></textarea>
+      <div class="status" id="actSaveStatus"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const $ = (id)=>document.getElementById(id);
+  const email = (localStorage.getItem("session_email") || "").toLowerCase();
+  const role  = localStorage.getItem("session_role") || "estudiante";
+  const name  = localStorage.getItem("session_name") || email;
+  if(!email) location.href="../index.html";
+  $("back").onclick=()=>location.href="../dashboard.html";
+
+  const canTeacher = ()=> role==="maestro" || role==="administrador";
+
+  // curso por query ?course=ID
+  const params = new URLSearchParams(location.search);
+  const courseId = params.get("course");
+  if(!courseId){ location.href="../dashboard.html"; }
+
+  function esc(s){ return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+  // leer courses.json y validar acceso
+  async function loadCourses(){
+    const r = await fetch("../courses.json?v="+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw new Error("courses.json");
+    return (await r.json()).courses || [];
+  }
+  const courses = await loadCourses();
+  const course = courses.find(c=>c.id===courseId);
+  if(!course){ alert("Curso no registrado"); location.href="../dashboard.html"; }
+
+  document.title = course.name;
+  $("courseName").textContent = course.name;
+  $("courseMeta").textContent = email + " · " + role;
+
+  const allowed = (course.allowedEmails||[]).map(x=>String(x).toLowerCase());
+  if(!(canTeacher() || allowed.includes(email))){
+    alert("Sin permiso");
+    location.href="../dashboard.html";
+  }
+
+  $("newAnn").style.display = canTeacher() ? "inline-block" : "none";
+  $("newAct").style.display = canTeacher() ? "inline-block" : "none";
+
+  // firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, doc,
+    query, orderBy, onSnapshot, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCygD9ISTn-mqAt5WacS1aIAVb1TunoG00",
+    authDomain: "plataformacecnic.firebaseapp.com",
+    projectId: "plataformacecnic",
+    storageBucket: "plataformacecnic.firebasestorage.app",
+    messagingSenderId: "1053875195363",
+    appId: "1:1053875195363:web:57be5f3ff586466ea7a4d6"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  // refs
+  const annRef = collection(db,"courses",courseId,"announcements");
+  const actRef = collection(db,"courses",courseId,"activities");
+
+  // UI helpers
+  const show=(m)=>m.classList.add("show");
+  const hide=(m)=>m.classList.remove("show");
+
+  const viewM=$("viewM"), annM=$("annM"), actM=$("actM");
+
+  $("vClose").onclick=()=>{ hide(viewM); $("forumArea").style.display="none"; };
+  $("annCancel").onclick=()=>hide(annM);
+  $("actCancel").onclick=()=>hide(actM);
+
+  // render announcements
+  let anns=[];
+  function setAnnStatus(t){ $("annStatus").textContent=t||""; }
+  function renderAnns(){
+    const wrap=$("annList"); wrap.innerHTML="";
+    anns.forEach(a=>{
+      const div=document.createElement("div");
+      div.className="card";
+      div.innerHTML=`<b>${esc(a.title||"Aviso")}</b><span>${esc(a.body||"")}</span>`;
+      div.onclick=()=>{
+        $("vTitle").textContent=a.title||"Aviso";
+        $("vBody").textContent=a.body||"";
+        $("forumArea").style.display="none";
+        show(viewM);
+      };
+      wrap.appendChild(div);
+    });
+    $("annCount").textContent = anns.length ? anns.length+" aviso(s)" : "—";
+    setAnnStatus(anns.length ? "" : "Avisos y novedades generales");
+  }
+
+  onSnapshot(query(annRef, orderBy("createdAt","desc")),(snap)=>{
+    anns=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderAnns();
+  });
+
+  // render activities
+  let acts=[];
+  function setActStatus(t){ $("actStatus").textContent=t||""; }
+  function renderActs(){
+    const wrap=$("actList"); wrap.innerHTML="";
+    acts.forEach(a=>{
+      const div=document.createElement("div");
+      div.className="card";
+      div.innerHTML=`<b>${esc(a.title||"Actividad")}</b><span>${esc(a.body||"")}</span>`;
+      div.onclick=()=>openActivity(a);
+      wrap.appendChild(div);
+    });
+    $("actCount").textContent = acts.length ? acts.length+" actividad(es)" : "—";
+    setActStatus(acts.length ? "" : "No hay actividades todavía");
+  }
+
+  onSnapshot(query(actRef, orderBy("createdAt","desc")),(snap)=>{
+    acts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderActs();
+  });
+
+  // crear aviso
+  $("newAnn").onclick=()=>{
+    $("annTitle").value=""; $("annBody").value="";
+    $("annSaveStatus").textContent="";
+    show(annM);
+  };
+  $("annSave").onclick=async()=>{
+    const title=$("annTitle").value.trim();
+    const body=$("annBody").value.trim();
+    if(!title||!body){ $("annSaveStatus").textContent="Falta título o texto"; return; }
+    $("annSaveStatus").textContent="Guardando...";
+    await addDoc(annRef,{ title, body, authorEmail: email, authorName: name, authorRole: role, createdAt: serverTimestamp() });
+    hide(annM);
+  };
+
+  // crear actividad
+  $("newAct").onclick=()=>{
+    $("actTitle").value=""; $("actBody").value="";
+    $("actSaveStatus").textContent="";
+    show(actM);
+  };
+  $("actSave").onclick=async()=>{
+    const title=$("actTitle").value.trim();
+    const body=$("actBody").value.trim();
+    if(!title||!body){ $("actSaveStatus").textContent="Falta título o texto"; return; }
+    $("actSaveStatus").textContent="Guardando...";
+    await addDoc(actRef,{ title, body, authorEmail: email, authorName: name, authorRole: role, createdAt: serverTimestamp() });
+    hide(actM);
+  };
+
+  // foro: comentarios por actividad
+  let unsubscribeComments=null;
+  async function openActivity(a){
+    $("vTitle").textContent=a.title||"Actividad";
+    $("vBody").textContent=a.body||"";
+    $("forumArea").style.display="block";
+    $("cText").value="";
+    $("cStatus").textContent="";
+    show(viewM);
+
+    if(unsubscribeComments) unsubscribeComments();
+
+    const cRef = collection(db,"courses",courseId,"activities",a.id,"comments");
+    const cq = query(cRef, orderBy("createdAt","asc"));
+    unsubscribeComments = onSnapshot(cq,(snap)=>{
+      const list=$("cList"); list.innerHTML="";
+      snap.forEach(d=>{
+        const c=d.data();
+        const div=document.createElement("div");
+        div.className="comment";
+        div.innerHTML=`<b>${esc(c.authorName||c.authorEmail||"Usuario")}</b><span>${esc(c.text||"")}</span>`;
+        list.appendChild(div);
+      });
+    });
+
+    $("cSend").onclick = async ()=>{
+      const text=$("cText").value.trim();
+      if(!text){ $("cStatus").textContent="Escribe algo"; return; }
+      $("cStatus").textContent="Enviando...";
+      await addDoc(cRef,{
+        text,
+        authorEmail: email,
+        authorName: name,
+        authorRole: role,
+        createdAt: serverTimestamp()
+      });
+      $("cText").value="";
+      $("cStatus").textContent="";
+    };
+  }
+</script>
+</body>
+</html>
