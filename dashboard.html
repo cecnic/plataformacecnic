@@ -313,7 +313,7 @@
       const a=document.createElement("a");
       a.className="courseLink";
       // plantilla única: curso.html?course=ID
-      a.href = `cursos/curso.html?course=${encodeURIComponent(c.id)}`;
+      a.href = c.page;
       a.innerHTML = `${capSvg()}<div class="courseText"><b>${esc(c.name)}</b></div>`;
       wrap.appendChild(a);
     });
