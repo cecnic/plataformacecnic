@@ -1,4 +1,3 @@
-<!-- dashboard.html -->
 <!doctype html>
 <html lang="es">
 <head>
@@ -17,6 +16,8 @@
       --shadow:0 25px 70px rgba(0,0,0,.45);
       --radius:22px;
       --blue:#2fb0ff;
+      --ok:rgba(60,255,160,.85);
+      --bad:rgba(255,90,110,.9);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -78,15 +79,9 @@
       color:rgba(255,255,255,.86);
       border:1px solid rgba(255,255,255,.14);
     }
-    .panelBody{
-      padding:12px;
-      overflow:auto;
-      min-height:0;
-    }
+    .panelBody{padding:12px; overflow:auto; min-height:0}
     .courseLink{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
+      display:flex; gap:10px; align-items:flex-start;
       padding:10px 10px;
       border-radius:14px;
       cursor:pointer;
@@ -103,7 +98,6 @@
     }
     .cap{width:18px;height:18px;flex:0 0 auto;margin-top:2px}
     .courseText b{display:block;font-weight:900;font-size:14px;color:var(--blue)}
-    .courseText span{display:block;margin-top:6px;color:rgba(120,200,255,.95);font-size:12px}
     .empty{
       margin-top:12px;
       padding:12px;
@@ -115,11 +109,7 @@
       display:none;
     }
 
-    .main{
-      display:flex;
-      flex-direction:column;
-      min-height:0;
-    }
+    .main{display:flex; flex-direction:column; min-height:0}
     .mainTop{
       padding:18px;
       border-bottom:1px solid rgba(255,255,255,.10);
@@ -131,46 +121,78 @@
       flex-wrap:wrap;
     }
     .mainTop h2{margin:0;font-size:18px;font-weight:1000}
-    .mainTop .mini{color:var(--muted);font-size:12px}
-    .mainBody{
-      padding:18px;
-      overflow:auto;
-      min-height:0;
-    }
+    .mini{color:var(--muted);font-size:12px}
+    .mainBody{padding:18px; overflow:auto; min-height:0}
 
-    /* Avisos como tu foto (titulo grande y caja blanca) */
-    .avisosTitle{
-      font-size:48px;
-      font-weight:900;
-      letter-spacing:.5px;
-      margin:0 0 14px 0;
+    .sectionTitle{
+      font-size:38px;
+      font-weight:1000;
+      margin:0 0 12px 0;
       color: rgba(255,70,70,.9);
-      text-align:center;
+      text-align:left;
     }
-    .avisosBox{
-      background: rgba(255,255,255,.92);
-      color: #333;
-      border-radius: 14px;
-      padding: 16px 18px;
-      min-height: 86px;
-      box-shadow: 0 18px 55px rgba(0,0,0,.25);
-      border:1px solid rgba(0,0,0,.06);
-      max-width: 980px;
-      margin: 0 auto;
-    }
-    .avisosMuted{opacity:.75;font-size:16px}
 
-    /* Grid anuncios + avisos */
-    .grid{
+    .gridCards{
       display:grid;
-      grid-template-columns: 1fr;
-      gap:18px;
-      align-items:start;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap:12px;
+      max-width:1100px;
     }
-
+    .card{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .card:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); }
+    .card b{display:block; font-size:14px}
+    .card span{display:block; margin-top:7px; color:var(--muted); font-size:12px; line-height:1.35}
+    .toolbar{
+      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      max-width:1100px;
+      margin-bottom:12px;
+    }
+    .status{font-size:12px;color:var(--muted);min-height:16px}
+    .status.ok{color:var(--ok)} .status.bad{color:var(--bad)}
+    .modal{
+      position:fixed; inset:0;
+      display:none; place-items:center;
+      background: rgba(0,0,0,.60);
+      backdrop-filter: blur(10px);
+      padding:18px;
+    }
+    .modal.show{display:grid}
+    .paper{
+      width:min(920px, 100%);
+      max-height: 86vh;
+      overflow:auto;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      box-shadow: 0 30px 90px rgba(0,0,0,.55);
+    }
+    .paperTop{
+      position:sticky; top:0;
+      padding:12px 14px;
+      background: rgba(0,0,0,.28);
+      border-bottom:1px solid rgba(255,255,255,.10);
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .paperBody{padding:16px; white-space:pre-wrap; line-height:1.55}
+    .input,.area{
+      width:100%; padding:12px 14px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color:var(--text); outline:none;
+    }
+    .area{min-height:140px; resize:vertical}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
     @media (max-width:980px){
       body{grid-template-columns:1fr; overflow:auto}
-      .avisosTitle{font-size:38px}
+      .gridCards{grid-template-columns:1fr}
+      .sectionTitle{font-size:30px}
     }
   </style>
 </head>
@@ -197,107 +219,172 @@
     <div class="mainTop">
       <div>
         <h2>Inicio</h2>
-        <div class="mini">Panel</div>
+        <div class="mini">Dashboard</div>
       </div>
-      <button class="btn ghost" id="goAvisos">Ver Avisos</button>
+      <div class="row">
+        <button class="btn ghost" id="goAvisos">Avisos</button>
+        <button class="btn" id="newDash" style="display:none">+ Aviso</button>
+      </div>
     </div>
 
     <div class="mainBody">
-      <div class="grid">
-        <section id="avisos">
-          <div class="avisosTitle">Avisos</div>
-          <div class="avisosBox">
-            <div class="avisosMuted">Avisos y novedades generales</div>
-          </div>
-        </section>
-
-        <section>
-          <div style="display:grid;gap:12px;max-width:980px;margin:0 auto">
-            <div class="avisosBox" style="padding:0;overflow:hidden">
-              <img src="https://i.imgur.com/q7GHWbv.jpeg" alt="" style="width:100%;display:block;max-height:360px;object-fit:cover">
-            </div>
-            <div class="avisosBox" style="padding:14px 16px">
-              <div style="font-weight:900;font-size:16px">Cronograma de actividades 2026</div>
-              <div style="opacity:.75;margin-top:6px">Aquí podés poner anuncios con imágenes de Imgur.</div>
-            </div>
-          </div>
-        </section>
+      <div class="toolbar">
+        <h3 class="sectionTitle" id="avisos">Avisos</h3>
+        <div class="status" id="dashStatus"></div>
       </div>
+      <div class="gridCards" id="dashPosts"></div>
     </div>
   </main>
 
-  <script>
-    const email = (localStorage.getItem("session_email") || "").toLowerCase();
-    const role  = localStorage.getItem("session_role") || "estudiante";
-    const name  = localStorage.getItem("session_name") || email;
+  <!-- ver -->
+  <div class="modal" id="viewM">
+    <div class="paper">
+      <div class="paperTop">
+        <b id="vTitle">—</b>
+        <div class="row">
+          <button class="btn ghost" id="vClose">Cerrar</button>
+        </div>
+      </div>
+      <div class="paperBody" id="vBody"></div>
+    </div>
+  </div>
 
-    if(!email) location.href="index.html";
+  <!-- crear -->
+  <div class="modal" id="editM">
+    <div class="paper">
+      <div class="paperTop">
+        <b>Nuevo aviso (Dashboard)</b>
+        <div class="row">
+          <button class="btn ghost" id="eCancel">Cancelar</button>
+          <button class="btn" id="eSave">Guardar</button>
+        </div>
+      </div>
+      <div class="paperBody">
+        <input class="input" id="fTitle" placeholder="Título">
+        <textarea class="area" id="fBody" placeholder="Texto..."></textarea>
+        <div class="status" id="saveStatus"></div>
+      </div>
+    </div>
+  </div>
 
-    const $ = (id)=>document.getElementById(id);
-    $("name").textContent = name;
-    $("role").textContent = "Rol: " + role;
-    $("sub").textContent = email;
+<script type="module">
+  // sesión
+  const email = (localStorage.getItem("session_email") || "").toLowerCase();
+  const role  = localStorage.getItem("session_role") || "estudiante";
+  const name  = localStorage.getItem("session_name") || email;
+  if(!email) location.href="index.html";
 
-    $("logout").onclick = ()=>{
-      localStorage.removeItem("session_email");
-      localStorage.removeItem("session_role");
-      localStorage.removeItem("session_name");
-      location.href="index.html";
-    };
+  const $ = (id)=>document.getElementById(id);
+  $("name").textContent = name;
+  $("role").textContent = "Rol: " + role;
+  $("sub").textContent = email;
 
-    $("goAvisos").onclick = ()=> document.getElementById("avisos").scrollIntoView({behavior:"smooth"});
+  $("logout").onclick = ()=>{
+    localStorage.removeItem("session_email");
+    localStorage.removeItem("session_role");
+    localStorage.removeItem("session_name");
+    location.href="index.html";
+  };
+  $("goAvisos").onclick = ()=> $("avisos").scrollIntoView({behavior:"smooth"});
 
-    const canSeeAll = ()=> role==="maestro" || role==="administrador";
+  const canEdit = ()=> role==="maestro" || role==="administrador";
+  $("newDash").style.display = canEdit() ? "inline-block" : "none";
 
-    async function loadCourses(){
-      const r = await fetch("courses.json",{cache:"no-store"});
-      if(!r.ok) throw new Error("courses.json");
-      const d = await r.json();
-      return d.courses || [];
-    }
+  // cursos visibles
+  async function loadCourses(){
+    const r = await fetch("courses.json?v="+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw new Error("courses.json");
+    const d = await r.json();
+    return d.courses || [];
+  }
+  function capSvg(){
+    return `
+    <svg class="cap" viewBox="0 0 24 24" fill="none">
+      <path d="M12 3l9 5-9 5-9-5 9-5Z" stroke="currentColor" stroke-width="1.6" opacity=".9"/>
+      <path d="M5 10v5c0 2 3 4 7 4s7-2 7-4v-5" stroke="currentColor" stroke-width="1.6" opacity=".75"/>
+    </svg>`;
+  }
+  function esc(s){ return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+  function renderCourses(list){
+    const wrap = $("courseList"); wrap.innerHTML="";
+    if(!list.length){ $("empty").style.display="block"; return; }
+    $("empty").style.display="none";
+    list.forEach(c=>{
+      const a=document.createElement("a");
+      a.className="courseLink";
+      // plantilla única: curso.html?course=ID
+      a.href = `cursos/curso.html?course=${encodeURIComponent(c.id)}`;
+      a.innerHTML = `${capSvg()}<div class="courseText"><b>${esc(c.name)}</b></div>`;
+      wrap.appendChild(a);
+    });
+  }
+  (async()=>{
+    const courses=await loadCourses();
+    const visible = (role==="maestro"||role==="administrador")
+      ? courses
+      : courses.filter(c=>(c.allowedEmails||[]).map(x=>String(x).toLowerCase()).includes(email));
+    renderCourses(visible);
+  })();
 
-    function capSvg(){
-      return `
-      <svg class="cap" viewBox="0 0 24 24" fill="none">
-        <path d="M12 3l9 5-9 5-9-5 9-5Z" stroke="currentColor" stroke-width="1.6" opacity=".9"/>
-        <path d="M5 10v5c0 2 3 4 7 4s7-2 7-4v-5" stroke="currentColor" stroke-width="1.6" opacity=".75"/>
-      </svg>`;
-    }
-    function esc(s){ return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+  // firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    function renderCourses(list){
-      const wrap = $("courseList");
-      wrap.innerHTML = "";
-      if(!list.length){ $("empty").style.display="block"; return; }
-      $("empty").style.display="none";
+  const firebaseConfig = {
+    apiKey: "AIzaSyCygD9ISTn-mqAt5WacS1aIAVb1TunoG00",
+    authDomain: "plataformacecnic.firebaseapp.com",
+    projectId: "plataformacecnic",
+    storageBucket: "plataformacecnic.firebasestorage.app",
+    messagingSenderId: "1053875195363",
+    appId: "1:1053875195363:web:57be5f3ff586466ea7a4d6"
+  };
+  const app=initializeApp(firebaseConfig);
+  const db=getFirestore(app);
 
-      list.forEach(c=>{
-        const a = document.createElement("a");
-        a.className = "courseLink";
-        a.href = c.page;
-        a.innerHTML = `
-          ${capSvg()}
-          <div class="courseText">
-            <b>${esc(c.name)}</b>
-          </div>
-        `;
-        wrap.appendChild(a);
-      });
-    }
+  // dashboard avisos
+  const postsRef = collection(db,"dashboard_posts");
+  const q = query(postsRef, orderBy("createdAt","desc"));
 
-    (async ()=>{
-      try{
-        const courses = await loadCourses();
-        const visible = canSeeAll()
-          ? courses
-          : courses.filter(c => (c.allowedEmails||[]).map(x=>String(x).toLowerCase()).includes(email));
-        renderCourses(visible);
-      }catch(e){
-        console.error(e);
-        $("empty").style.display="block";
-        $("empty").textContent="Error cargando courses.json";
-      }
-    })();
-  </script>
+  let dashPosts=[];
+  function setDashStatus(t,type=""){ $("dashStatus").textContent=t||""; $("dashStatus").className="status "+type; }
+  function renderDash(){
+    const wrap=$("dashPosts"); wrap.innerHTML="";
+    dashPosts.forEach(p=>{
+      const div=document.createElement("div");
+      div.className="card";
+      div.innerHTML=`<b>${esc(p.title||"Aviso")}</b><span>${esc((p.body||"").slice(0,120))}${(p.body||"").length>120?"...":""}</span>`;
+      div.onclick=()=>openView(p);
+      wrap.appendChild(div);
+    });
+    if(!dashPosts.length) setDashStatus("Avisos y novedades generales");
+    else setDashStatus("");
+  }
+  function openView(p){
+    $("vTitle").textContent = p.title||"Aviso";
+    $("vBody").textContent  = p.body||"";
+    $("viewM").classList.add("show");
+  }
+  $("vClose").onclick=()=>$("viewM").classList.remove("show");
+
+  onSnapshot(q,(snap)=>{
+    dashPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderDash();
+  },()=>setDashStatus("Error Firestore","bad"));
+
+  // modal nuevo dashboard
+  $("newDash").onclick=()=>{ $("fTitle").value=""; $("fBody").value=""; $("saveStatus").textContent=""; $("editM").classList.add("show"); };
+  $("eCancel").onclick=()=>$("editM").classList.remove("show");
+
+  $("eSave").onclick=async()=>{
+    const title=$("fTitle").value.trim();
+    const body=$("fBody").value.trim();
+    if(!title||!body){ $("saveStatus").textContent="Falta título o texto"; return; }
+    $("saveStatus").textContent="Guardando...";
+    await addDoc(postsRef,{ title, body, authorEmail: email, authorRole: role, createdAt: serverTimestamp() });
+    $("editM").classList.remove("show");
+  };
+</script>
 </body>
 </html>
