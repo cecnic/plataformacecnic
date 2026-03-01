@@ -7,6 +7,12 @@
       "allowedEmails": ["alumno1@cecnic.com", "alumno2@cecnic.com"]
     },
     {
+  "id": "english-kids",
+  "name": "English Kids",
+  "page": "cursos/english-kids.html",
+  "allowedEmails": ["profe1@cecnic.com", "alumno1@cecnic.com","alumno2@cecnic.com"]
+    }; 
+    {
       "id": "fisica-7",
       "name": "FISICA SEPTIMO GRADO",
       "page": "cursos/fisica-7.html",
