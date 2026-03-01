@@ -1,0 +1,9 @@
+// apartado.json
+{
+  "users": [
+    { "email": "admin", "pass": "1234", "role": "administrador", "name": "Administrador" },
+    { "email": "profe1@cecnic.com", "pass": "1234", "role": "maestro", "name": "Profe 1" },
+    { "email": "alumno1@cecnic.com", "pass": "1234", "role": "estudiante", "name": "Alumno 1" },
+    { "email": "alumno2@cecnic.com", "pass": "1234", "role": "estudiante", "name": "Alumno 2" }
+  ]
+}
