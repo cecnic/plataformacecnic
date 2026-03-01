@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Curso Ingles Kids</title>
+<title>Ingles Kids</title>
 <meta name="color-scheme" content="dark light">
 <style>
 :root{
@@ -154,9 +154,7 @@ body{
 }
 .comment b{display:block;font-size:12px}
 .comment span{display:block;color:var(--muted);font-size:12px;margin-top:6px;white-space:pre-wrap}
-@media (max-width:980px){
-  .grid{grid-template-columns:1fr}
-}
+@media (max-width:980px){ .grid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -166,7 +164,7 @@ body{
     <div class="row">
       <div class="roundBack" id="back" title="Dashboard">←</div>
       <div class="title">
-        <b id="courseName">Curso</b>
+        <b id="courseName">Ingles Kids</b>
         <span id="courseMeta">—</span>
       </div>
     </div>
@@ -202,7 +200,6 @@ body{
 
 </div>
 
-<!-- Ver aviso/actividad -->
 <div class="modal" id="viewM">
   <div class="paper">
     <div class="paperTop">
@@ -220,7 +217,7 @@ body{
         <div id="cList" style="display:grid;gap:10px"></div>
 
         <div class="sep"></div>
-        <textarea class="area" id="cText" placeholder="Escribí un comentario..."></textarea>
+        <textarea class="area" id="cText" placeholder="Escribi un comentario..."></textarea>
         <div class="row" style="margin-top:10px">
           <button class="btn" id="cSend">Comentar</button>
           <div class="status" id="cStatus"></div>
@@ -231,7 +228,6 @@ body{
   </div>
 </div>
 
-<!-- Nuevo aviso -->
 <div class="modal" id="annM">
   <div class="paper">
     <div class="paperTop">
@@ -242,14 +238,13 @@ body{
       </div>
     </div>
     <div class="paperBody">
-      <input class="input" id="annTitle" placeholder="Título">
-      <textarea class="area" id="annBody" placeholder="Descripción..."></textarea>
+      <input class="input" id="annTitle" placeholder="Titulo">
+      <textarea class="area" id="annBody" placeholder="Descripcion..."></textarea>
       <div class="status" id="annSaveStatus"></div>
     </div>
   </div>
 </div>
 
-<!-- Nueva actividad -->
 <div class="modal" id="actM">
   <div class="paper">
     <div class="paperTop">
@@ -260,8 +255,8 @@ body{
       </div>
     </div>
     <div class="paperBody">
-      <input class="input" id="actTitle" placeholder="Título">
-      <textarea class="area" id="actBody" placeholder="Descripción completa..."></textarea>
+      <input class="input" id="actTitle" placeholder="Titulo">
+      <textarea class="area" id="actBody" placeholder="Descripcion completa..."></textarea>
       <div class="status" id="actSaveStatus"></div>
     </div>
   </div>
@@ -269,48 +264,52 @@ body{
 
 <script type="module">
   const $ = (id)=>document.getElementById(id);
-  const email = (localStorage.getItem("session_email") || "").toLowerCase();
-  const role  = localStorage.getItem("session_role") || "estudiante";
-  const name  = localStorage.getItem("session_name") || email;
+
+  const email = (localStorage.getItem("session_email") || "").trim().toLowerCase();
+  const role  = (localStorage.getItem("session_role") || "estudiante").trim().toLowerCase();
+  const name  = (localStorage.getItem("session_name") || email).trim();
+
   if(!email) location.href="../index.html";
   $("back").onclick=()=>location.href="../dashboard.html";
 
   const canTeacher = ()=> role==="maestro" || role==="administrador";
 
-  // curso por query ?course=ID
-  const params = new URLSearchParams(location.search);
-  const courseId = params.get("course");
-  if(!courseId){ location.href="../dashboard.html"; }
+  const COURSE_ID = "ingles-kids";
 
   function esc(s){ return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
 
-  // leer courses.json y validar acceso
   async function loadCourses(){
-    const r = await fetch("../courses.json?v="+Date.now(),{cache:"no-store"});
-    if(!r.ok) throw new Error("courses.json");
-    return (await r.json()).courses || [];
+    const url = new URL("../courses.json", window.location.href).toString();
+    const r = await fetch(url + "?v=" + Date.now(), { cache:"no-store" });
+    if(!r.ok) throw new Error("No se pudo leer courses.json: HTTP " + r.status);
+    const d = await r.json();
+    return d.courses || [];
   }
-  const courses = await loadCourses();
-  const course = courses.find(c=>c.id===courseId);
-  if(!course){ alert("Curso no registrado"); location.href="../dashboard.html"; }
 
-  document.title = course.name;
-  $("courseName").textContent = course.name;
+  const courses = await loadCourses();
+  const course  = courses.find(c => String(c.id).trim() === COURSE_ID);
+
+  if(!course){
+    alert("Curso no registrado en courses.json: " + COURSE_ID);
+    location.href="../dashboard.html";
+  }
+
+  document.title = course.name || "Ingles Kids";
+  $("courseName").textContent = course.name || "Ingles Kids";
   $("courseMeta").textContent = email + " · " + role;
 
-  const allowed = (course.allowedEmails||[]).map(x=>String(x).toLowerCase());
+  const allowed = (course.allowedEmails || []).map(x => String(x).trim().toLowerCase());
   if(!(canTeacher() || allowed.includes(email))){
-    alert("Sin permiso");
+    alert("Sin permiso para este curso: " + email);
     location.href="../dashboard.html";
   }
 
   $("newAnn").style.display = canTeacher() ? "inline-block" : "none";
   $("newAct").style.display = canTeacher() ? "inline-block" : "none";
 
-  // firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import {
-    getFirestore, collection, addDoc, doc,
+    getFirestore, collection, addDoc,
     query, orderBy, onSnapshot, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -322,14 +321,13 @@ body{
     messagingSenderId: "1053875195363",
     appId: "1:1053875195363:web:57be5f3ff586466ea7a4d6"
   };
+
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
 
-  // refs
-  const annRef = collection(db,"courses",courseId,"announcements");
-  const actRef = collection(db,"courses",courseId,"activities");
+  const annRef = collection(db,"courses",COURSE_ID,"announcements");
+  const actRef = collection(db,"courses",COURSE_ID,"activities");
 
-  // UI helpers
   const show=(m)=>m.classList.add("show");
   const hide=(m)=>m.classList.remove("show");
 
@@ -339,9 +337,8 @@ body{
   $("annCancel").onclick=()=>hide(annM);
   $("actCancel").onclick=()=>hide(actM);
 
-  // render announcements
+  // Avisos
   let anns=[];
-  function setAnnStatus(t){ $("annStatus").textContent=t||""; }
   function renderAnns(){
     const wrap=$("annList"); wrap.innerHTML="";
     anns.forEach(a=>{
@@ -357,7 +354,7 @@ body{
       wrap.appendChild(div);
     });
     $("annCount").textContent = anns.length ? anns.length+" aviso(s)" : "—";
-    setAnnStatus(anns.length ? "" : "Avisos y novedades generales");
+    $("annStatus").textContent = anns.length ? "" : "Avisos y novedades generales";
   }
 
   onSnapshot(query(annRef, orderBy("createdAt","desc")),(snap)=>{
@@ -365,9 +362,8 @@ body{
     renderAnns();
   });
 
-  // render activities
+  // Actividades
   let acts=[];
-  function setActStatus(t){ $("actStatus").textContent=t||""; }
   function renderActs(){
     const wrap=$("actList"); wrap.innerHTML="";
     acts.forEach(a=>{
@@ -378,7 +374,7 @@ body{
       wrap.appendChild(div);
     });
     $("actCount").textContent = acts.length ? acts.length+" actividad(es)" : "—";
-    setActStatus(acts.length ? "" : "No hay actividades todavía");
+    $("actStatus").textContent = acts.length ? "" : "No hay actividades todavia";
   }
 
   onSnapshot(query(actRef, orderBy("createdAt","desc")),(snap)=>{
@@ -386,38 +382,41 @@ body{
     renderActs();
   });
 
-  // crear aviso
+  // Crear aviso
   $("newAnn").onclick=()=>{
     $("annTitle").value=""; $("annBody").value="";
     $("annSaveStatus").textContent="";
     show(annM);
   };
+
   $("annSave").onclick=async()=>{
     const title=$("annTitle").value.trim();
     const body=$("annBody").value.trim();
-    if(!title||!body){ $("annSaveStatus").textContent="Falta título o texto"; return; }
+    if(!title||!body){ $("annSaveStatus").textContent="Falta titulo o texto"; return; }
     $("annSaveStatus").textContent="Guardando...";
     await addDoc(annRef,{ title, body, authorEmail: email, authorName: name, authorRole: role, createdAt: serverTimestamp() });
     hide(annM);
   };
 
-  // crear actividad
+  // Crear actividad
   $("newAct").onclick=()=>{
     $("actTitle").value=""; $("actBody").value="";
     $("actSaveStatus").textContent="";
     show(actM);
   };
+
   $("actSave").onclick=async()=>{
     const title=$("actTitle").value.trim();
     const body=$("actBody").value.trim();
-    if(!title||!body){ $("actSaveStatus").textContent="Falta título o texto"; return; }
+    if(!title||!body){ $("actSaveStatus").textContent="Falta titulo o texto"; return; }
     $("actSaveStatus").textContent="Guardando...";
     await addDoc(actRef,{ title, body, authorEmail: email, authorName: name, authorRole: role, createdAt: serverTimestamp() });
     hide(actM);
   };
 
-  // foro: comentarios por actividad
+  // Foro comentarios
   let unsubscribeComments=null;
+
   async function openActivity(a){
     $("vTitle").textContent=a.title||"Actividad";
     $("vBody").textContent=a.body||"";
@@ -428,8 +427,9 @@ body{
 
     if(unsubscribeComments) unsubscribeComments();
 
-    const cRef = collection(db,"courses",courseId,"activities",a.id,"comments");
+    const cRef = collection(db,"courses",COURSE_ID,"activities",a.id,"comments");
     const cq = query(cRef, orderBy("createdAt","asc"));
+
     unsubscribeComments = onSnapshot(cq,(snap)=>{
       const list=$("cList"); list.innerHTML="";
       snap.forEach(d=>{
