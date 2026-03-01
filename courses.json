@@ -1,10 +1,14 @@
 {
   "courses": [
     {
-  "id": "english-kids",
-  "name": "English Kids",
-  "page": "cursos/ingles-kids.html",
-  "allowedEmails": ["profe1@cecnic.com", "alumno1@cecnic.com","alumno2@cecnic.com"]
+      "id": "ingles-kids",
+      "name": "Ingles Kids",
+      "page": "cursos/ingles-kids.html",
+      "allowedEmails": [
+        "profe1@cecnic.com",
+        "alumno1@cecnic.com",
+        "alumno2@cecnic.com"
+      ]
     }
   ]
 }
