@@ -1,0 +1,303 @@
+<!-- dashboard.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Dashboard</title>
+  <meta name="color-scheme" content="dark light">
+  <style>
+    :root{
+      --bg1:#070b16; --bg2:#0b1633;
+      --glass:rgba(255,255,255,.10);
+      --glass2:rgba(255,255,255,.14);
+      --stroke:rgba(255,255,255,.16);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.70);
+      --shadow:0 25px 70px rgba(0,0,0,.45);
+      --radius:22px;
+      --blue:#2fb0ff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 15%, rgba(120,140,255,.35), transparent 55%),
+        radial-gradient(1100px 650px at 85% 25%, rgba(255,110,190,.22), transparent 60%),
+        radial-gradient(900px 600px at 50% 95%, rgba(90,255,210,.16), transparent 55%),
+        linear-gradient(160deg,var(--bg1),var(--bg2));
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:16px;
+      padding:16px;
+      overflow:hidden;
+    }
+    .panel,.main{
+      border-radius:var(--radius);
+      background:linear-gradient(180deg,var(--glass2),var(--glass));
+      border:1px solid var(--stroke);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(16px);
+      overflow:hidden;
+      min-height:0;
+    }
+    .panelTop{
+      padding:16px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+    }
+    .panelTop h1{margin:0;font-size:16px;font-weight:900}
+    .panelTop p{margin:6px 0 0;color:var(--muted);font-size:12px}
+    .who{
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+    }
+    .who b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
+    .who span{display:block;font-size:12px;color:var(--muted)}
+    .btn{
+      border:none; cursor:pointer;
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:900;
+      color:#0b0f1a;
+      background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.70));
+      white-space:nowrap;
+    }
+    .btn.ghost{
+      background:rgba(255,255,255,.08);
+      color:rgba(255,255,255,.86);
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .panelBody{
+      padding:12px;
+      overflow:auto;
+      min-height:0;
+    }
+    .courseLink{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 10px;
+      border-radius:14px;
+      cursor:pointer;
+      text-decoration:none;
+      color:var(--blue);
+      border:1px solid transparent;
+      transition: background .15s ease, border .15s ease, transform .15s ease;
+      line-height:1.1;
+    }
+    .courseLink:hover{
+      background:rgba(255,255,255,.06);
+      border-color:rgba(255,255,255,.12);
+      transform: translateY(-1px);
+    }
+    .cap{width:18px;height:18px;flex:0 0 auto;margin-top:2px}
+    .courseText b{display:block;font-weight:900;font-size:14px;color:var(--blue)}
+    .courseText span{display:block;margin-top:6px;color:rgba(120,200,255,.95);font-size:12px}
+    .empty{
+      margin-top:12px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.14);
+      color:rgba(255,255,255,.85);
+      font-size:13px;
+      display:none;
+    }
+
+    .main{
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+    .mainTop{
+      padding:18px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .mainTop h2{margin:0;font-size:18px;font-weight:1000}
+    .mainTop .mini{color:var(--muted);font-size:12px}
+    .mainBody{
+      padding:18px;
+      overflow:auto;
+      min-height:0;
+    }
+
+    /* Avisos como tu foto (titulo grande y caja blanca) */
+    .avisosTitle{
+      font-size:48px;
+      font-weight:900;
+      letter-spacing:.5px;
+      margin:0 0 14px 0;
+      color: rgba(255,70,70,.9);
+      text-align:center;
+    }
+    .avisosBox{
+      background: rgba(255,255,255,.92);
+      color: #333;
+      border-radius: 14px;
+      padding: 16px 18px;
+      min-height: 86px;
+      box-shadow: 0 18px 55px rgba(0,0,0,.25);
+      border:1px solid rgba(0,0,0,.06);
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .avisosMuted{opacity:.75;font-size:16px}
+
+    /* Grid anuncios + avisos */
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    @media (max-width:980px){
+      body{grid-template-columns:1fr; overflow:auto}
+      .avisosTitle{font-size:38px}
+    }
+  </style>
+</head>
+<body>
+  <aside class="panel">
+    <div class="panelTop">
+      <h1>Mis cursos</h1>
+      <p id="sub">—</p>
+      <div class="who">
+        <div style="min-width:0">
+          <b id="name">—</b>
+          <span id="role">—</span>
+        </div>
+        <button class="btn ghost" id="logout">Salir</button>
+      </div>
+    </div>
+    <div class="panelBody">
+      <div id="courseList"></div>
+      <div id="empty" class="empty">No tenés cursos asignados.</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="mainTop">
+      <div>
+        <h2>Inicio</h2>
+        <div class="mini">Panel</div>
+      </div>
+      <button class="btn ghost" id="goAvisos">Ver Avisos</button>
+    </div>
+
+    <div class="mainBody">
+      <div class="grid">
+        <section id="avisos">
+          <div class="avisosTitle">Avisos</div>
+          <div class="avisosBox">
+            <div class="avisosMuted">Avisos y novedades generales</div>
+          </div>
+        </section>
+
+        <section>
+          <div style="display:grid;gap:12px;max-width:980px;margin:0 auto">
+            <div class="avisosBox" style="padding:0;overflow:hidden">
+              <img src="https://i.imgur.com/q7GHWbv.jpeg" alt="" style="width:100%;display:block;max-height:360px;object-fit:cover">
+            </div>
+            <div class="avisosBox" style="padding:14px 16px">
+              <div style="font-weight:900;font-size:16px">Cronograma de actividades 2026</div>
+              <div style="opacity:.75;margin-top:6px">Aquí podés poner anuncios con imágenes de Imgur.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const email = (localStorage.getItem("session_email") || "").toLowerCase();
+    const role  = localStorage.getItem("session_role") || "estudiante";
+    const name  = localStorage.getItem("session_name") || email;
+
+    if(!email) location.href="index.html";
+
+    const $ = (id)=>document.getElementById(id);
+    $("name").textContent = name;
+    $("role").textContent = "Rol: " + role;
+    $("sub").textContent = email;
+
+    $("logout").onclick = ()=>{
+      localStorage.removeItem("session_email");
+      localStorage.removeItem("session_role");
+      localStorage.removeItem("session_name");
+      location.href="index.html";
+    };
+
+    $("goAvisos").onclick = ()=> document.getElementById("avisos").scrollIntoView({behavior:"smooth"});
+
+    const canSeeAll = ()=> role==="maestro" || role==="administrador";
+
+    async function loadCourses(){
+      const r = await fetch("courses.json",{cache:"no-store"});
+      if(!r.ok) throw new Error("courses.json");
+      const d = await r.json();
+      return d.courses || [];
+    }
+
+    function capSvg(){
+      return `
+      <svg class="cap" viewBox="0 0 24 24" fill="none">
+        <path d="M12 3l9 5-9 5-9-5 9-5Z" stroke="currentColor" stroke-width="1.6" opacity=".9"/>
+        <path d="M5 10v5c0 2 3 4 7 4s7-2 7-4v-5" stroke="currentColor" stroke-width="1.6" opacity=".75"/>
+      </svg>`;
+    }
+    function esc(s){ return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+    function renderCourses(list){
+      const wrap = $("courseList");
+      wrap.innerHTML = "";
+      if(!list.length){ $("empty").style.display="block"; return; }
+      $("empty").style.display="none";
+
+      list.forEach(c=>{
+        const a = document.createElement("a");
+        a.className = "courseLink";
+        a.href = c.page;
+        a.innerHTML = `
+          ${capSvg()}
+          <div class="courseText">
+            <b>${esc(c.name)}</b>
+          </div>
+        `;
+        wrap.appendChild(a);
+      });
+    }
+
+    (async ()=>{
+      try{
+        const courses = await loadCourses();
+        const visible = canSeeAll()
+          ? courses
+          : courses.filter(c => (c.allowedEmails||[]).map(x=>String(x).toLowerCase()).includes(email));
+        renderCourses(visible);
+      }catch(e){
+        console.error(e);
+        $("empty").style.display="block";
+        $("empty").textContent="Error cargando courses.json";
+      }
+    })();
+  </script>
+</body>
+</html>
