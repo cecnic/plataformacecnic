@@ -1,0 +1,65 @@
+// courses.json
+{
+  "courses": [
+    {
+      "id": "derecho-dignidad-7",
+      "name": "Derecho y Dignidad de la Mujer, Séptimo grado.",
+      "page": "cursos/derecho-dignidad-7.html",
+      "allowedEmails": ["alumno1@cecnic.com", "alumno2@cecnic.com"]
+    },
+    {
+      "id": "fisica-7",
+      "name": "FISICA SEPTIMO GRADO",
+      "page": "cursos/fisica-7.html",
+      "allowedEmails": ["alumno1@cecnic.com"]
+    },
+    {
+      "id": "matematica-7",
+      "name": "MATEMATICA SEPTIMO GRADO",
+      "page": "cursos/matematica-7.html",
+      "allowedEmails": ["alumno2@cecnic.com"]
+    },
+    {
+      "id": "cnaturales-7",
+      "name": "Ciencias Naturales 7mo",
+      "page": "cursos/cnaturales-7.html",
+      "allowedEmails": ["alumno1@cecnic.com", "alumno2@cecnic.com"]
+    },
+    {
+      "id": "computacion-7",
+      "name": "Computación Séptimo Grado",
+      "page": "cursos/computacion-7.html",
+      "allowedEmails": ["alumno1@cecnic.com", "alumno2@cecnic.com"]
+    },
+    {
+      "id": "valores-7",
+      "name": "Creciendo En Valores Septimo Grado",
+      "page": "cursos/valores-7.html",
+      "allowedEmails": ["alumno1@cecnic.com"]
+    },
+    {
+      "id": "csociales-7",
+      "name": "Ciencias Sociales Séptimo Grado",
+      "page": "cursos/csociales-7.html",
+      "allowedEmails": ["alumno2@cecnic.com"]
+    },
+    {
+      "id": "english-7a",
+      "name": "7th Grade A. English",
+      "page": "cursos/english-7a.html",
+      "allowedEmails": ["alumno1@cecnic.com", "alumno2@cecnic.com"]
+    },
+    {
+      "id": "contabilidad-7",
+      "name": "CONTABILIDAD 7MO",
+      "page": "cursos/contabilidad-7.html",
+      "allowedEmails": ["alumno1@cecnic.com"]
+    },
+    {
+      "id": "lengua-literatura-7",
+      "name": "LENGUA Y LITERATURA SÉPTIMO GRADO.",
+      "page": "cursos/lengua-literatura-7.html",
+      "allowedEmails": ["alumno2@cecnic.com"]
+    }
+  ]
+}
