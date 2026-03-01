@@ -1,4 +1,3 @@
-// apartado.json
 {
   "users": [
     { "email": "admin@cecnic.com", "pass": "1234", "role": "administrador", "name": "Administrador" },
