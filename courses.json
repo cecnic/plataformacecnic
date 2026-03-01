@@ -3,7 +3,7 @@
     {
   "id": "english-kids",
   "name": "English Kids",
-  "page": "cursos/english-kids.html",
+  "page": "cursos/ingles-kids.html",
   "allowedEmails": ["profe1@cecnic.com", "alumno1@cecnic.com","alumno2@cecnic.com"]
     }
   ]
