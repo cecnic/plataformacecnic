@@ -80,6 +80,11 @@
       color:rgba(255,255,255,.86);
       border:1px solid rgba(255,255,255,.14);
     }
+    .btn.danger{
+      background:rgba(255,90,110,.15);
+      color:rgba(255,255,255,.92);
+      border:1px solid rgba(255,90,110,.35);
+    }
     .panelBody{padding:12px; overflow:auto; min-height:0}
     .courseLink{
       display:flex; gap:10px; align-items:flex-start;
@@ -146,10 +151,46 @@
       background: rgba(0,0,0,.14);
       cursor:pointer;
       transition: transform .15s ease, background .15s ease;
+      overflow:hidden;
     }
     .card:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); }
-    .card b{display:block; font-size:14px}
-    .card span{display:block; margin-top:7px; color:var(--muted); font-size:12px; line-height:1.35}
+
+    .cardHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .cardText b{display:block; font-size:14px}
+    .cardText span{display:block; margin-top:7px; color:var(--muted); font-size:12px; line-height:1.35}
+    .cardActions{display:flex; gap:8px; flex:0 0 auto}
+    .chipBtn{
+      border:none; cursor:pointer;
+      padding:8px 10px;
+      border-radius:12px;
+      font-weight:900;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      color:rgba(255,255,255,.88);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .chipBtn.danger{
+      background:rgba(255,90,110,.14);
+      border:1px solid rgba(255,90,110,.30);
+    }
+
+    .postImg{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      display:block;
+      max-height:360px;
+      object-fit:cover;
+    }
+
     .toolbar{
       display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
       max-width:1100px;
@@ -157,12 +198,14 @@
     }
     .status{font-size:12px;color:var(--muted);min-height:16px}
     .status.ok{color:var(--ok)} .status.bad{color:var(--bad)}
+
     .modal{
       position:fixed; inset:0;
       display:none; place-items:center;
       background: rgba(0,0,0,.60);
       backdrop-filter: blur(10px);
       padding:18px;
+      z-index:50;
     }
     .modal.show{display:grid}
     .paper{
@@ -182,14 +225,37 @@
       display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
     }
     .paperBody{padding:16px; white-space:pre-wrap; line-height:1.55}
-    .input,.area{
+
+    .input,.area,.file{
       width:100%; padding:12px 14px; border-radius:14px;
       border:1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.06);
       color:var(--text); outline:none;
     }
     .area{min-height:140px; resize:vertical}
-    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
+    .hint{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .previewWrap{
+      margin-top:12px;
+      display:grid;
+      gap:10px;
+    }
+    .previewImg{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      display:block;
+      max-height:420px;
+      object-fit:cover;
+    }
+
     @media (max-width:980px){
       body{grid-template-columns:1fr; overflow:auto}
       .gridCards{grid-template-columns:1fr}
@@ -197,6 +263,7 @@
     }
   </style>
 </head>
+
 <body>
   <aside class="panel">
     <div class="panelTop">
@@ -246,36 +313,49 @@
           <button class="btn ghost" id="vClose">Cerrar</button>
         </div>
       </div>
-      <div class="paperBody" id="vBody"></div>
+      <div class="paperBody">
+        <div id="vBody" style="white-space:pre-wrap;line-height:1.55"></div>
+        <div style="height:12px"></div>
+        <img id="vImg" class="previewImg" alt="" style="display:none"/>
+      </div>
     </div>
   </div>
 
-  <!-- crear -->
+  <!-- crear/editar -->
   <div class="modal" id="editM">
     <div class="paper">
       <div class="paperTop">
-        <b>Nuevo aviso (Dashboard)</b>
+        <b id="editTitle">Nuevo aviso (Dashboard)</b>
         <div class="row">
           <button class="btn ghost" id="eCancel">Cancelar</button>
           <button class="btn" id="eSave">Guardar</button>
         </div>
       </div>
       <div class="paperBody">
-        <input class="input" id="fTitle" placeholder="Título">
-        <textarea class="area" id="fBody" placeholder="Texto..."></textarea>
+        <input class="input" id="fTitle" placeholder="Título (opcional)">
+        <textarea class="area" id="fBody" placeholder="Texto (opcional)"></textarea>
+
+        <div class="previewWrap">
+          <input class="file" id="fImg" type="file" accept="image/*">
+          <div class="hint" id="imgHint">Imagen obligatoria. Recomendado: JPG/PNG/WebP, 1200px de ancho aprox.</div>
+          <img id="imgPreview" class="previewImg" alt="" style="display:none">
+        </div>
+
         <div class="status" id="saveStatus"></div>
       </div>
     </div>
   </div>
 
 <script type="module">
-  // sesión
+  // ======= sesión =======
   const email = (localStorage.getItem("session_email") || "").toLowerCase();
   const role  = localStorage.getItem("session_role") || "estudiante";
   const name  = localStorage.getItem("session_name") || email;
   if(!email) location.href="index.html";
 
   const $ = (id)=>document.getElementById(id);
+  const canEdit = ()=> role==="maestro" || role==="administrador";
+
   $("name").textContent = name;
   $("role").textContent = "Rol: " + role;
   $("sub").textContent = email;
@@ -287,11 +367,9 @@
     location.href="index.html";
   };
   $("goAvisos").onclick = ()=> $("avisos").scrollIntoView({behavior:"smooth"});
-
-  const canEdit = ()=> role==="maestro" || role==="administrador";
   $("newDash").style.display = canEdit() ? "inline-block" : "none";
 
-  // cursos visibles
+  // ======= cursos visibles =======
   async function loadCourses(){
     const r = await fetch("courses.json?v="+Date.now(),{cache:"no-store"});
     if(!r.ok) throw new Error("courses.json");
@@ -305,7 +383,12 @@
       <path d="M5 10v5c0 2 3 4 7 4s7-2 7-4v-5" stroke="currentColor" stroke-width="1.6" opacity=".75"/>
     </svg>`;
   }
-  function esc(s){ return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+  function esc(s){
+    return String(s??"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;");
+  }
   function renderCourses(list){
     const wrap = $("courseList"); wrap.innerHTML="";
     if(!list.length){ $("empty").style.display="block"; return; }
@@ -313,7 +396,6 @@
     list.forEach(c=>{
       const a=document.createElement("a");
       a.className="courseLink";
-      // plantilla única: curso.html?course=ID
       a.href = c.page;
       a.innerHTML = `${capSvg()}<div class="courseText"><b>${esc(c.name)}</b></div>`;
       wrap.appendChild(a);
@@ -327,11 +409,15 @@
     renderCourses(visible);
   })();
 
-  // firebase
+  // ======= firebase =======
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import {
-    getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp
+    getFirestore, collection, addDoc, query, orderBy, onSnapshot,
+    serverTimestamp, doc, updateDoc, deleteDoc
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  import {
+    getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCygD9ISTn-mqAt5WacS1aIAVb1TunoG00",
@@ -341,51 +427,325 @@
     messagingSenderId: "1053875195363",
     appId: "1:1053875195363:web:57be5f3ff586466ea7a4d6"
   };
-  const app=initializeApp(firebaseConfig);
-  const db=getFirestore(app);
 
-  // dashboard avisos
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+  const st  = getStorage(app);
+
+  // ======= dashboard avisos (Firestore) =======
   const postsRef = collection(db,"dashboard_posts");
   const q = query(postsRef, orderBy("createdAt","desc"));
 
-  let dashPosts=[];
-  function setDashStatus(t,type=""){ $("dashStatus").textContent=t||""; $("dashStatus").className="status "+type; }
+  let dashPosts = [];
+  function setDashStatus(t,type=""){
+    $("dashStatus").textContent = t || "";
+    $("dashStatus").className = "status " + (type||"");
+  }
+
+  function formatCardText(p){
+    const title = (p.title||"").trim();
+    const body  = (p.body||"").trim();
+    const hasTitle = !!title;
+    const hasBody  = !!body;
+
+    // Si no hay titulo ni texto, no mostramos el bloque de texto
+    if(!hasTitle && !hasBody) return "";
+
+    let html = `<div class="cardText">`;
+    if(hasTitle) html += `<b>${esc(title)}</b>`;
+    if(hasBody){
+      const cut = body.length > 120 ? body.slice(0,120) + "..." : body;
+      html += `<span>${esc(cut)}</span>`;
+    }
+    html += `</div>`;
+    return html;
+  }
+
   function renderDash(){
-    const wrap=$("dashPosts"); wrap.innerHTML="";
+    const wrap = $("dashPosts");
+    wrap.innerHTML = "";
+
     dashPosts.forEach(p=>{
-      const div=document.createElement("div");
-      div.className="card";
-      div.innerHTML=`<b>${esc(p.title||"Aviso")}</b><span>${esc((p.body||"").slice(0,120))}${(p.body||"").length>120?"...":""}</span>`;
-      div.onclick=()=>openView(p);
+      const div = document.createElement("div");
+      div.className = "card";
+
+      const textHtml = formatCardText(p);
+
+      // acciones editar/eliminar
+      const actionsHtml = canEdit() ? `
+        <div class="cardActions">
+          <button class="chipBtn" data-act="edit">Editar</button>
+          <button class="chipBtn danger" data-act="del">Eliminar</button>
+        </div>` : "";
+
+      div.innerHTML = `
+        <div class="cardHead">
+          ${textHtml || `<div class="cardText"><b> </b></div>`}
+          ${actionsHtml}
+        </div>
+        ${p.imageUrl ? `<img class="postImg" src="${esc(p.imageUrl)}" alt="">` : ""}
+      `;
+
+      // click para ver (excepto cuando clickean botones)
+      div.addEventListener("click",(e)=>{
+        const act = e.target?.dataset?.act;
+        if(act === "edit"){ e.stopPropagation(); openEdit(p); return; }
+        if(act === "del"){  e.stopPropagation(); askDelete(p); return; }
+        openView(p);
+      });
+
       wrap.appendChild(div);
     });
+
     if(!dashPosts.length) setDashStatus("Avisos y novedades generales");
     else setDashStatus("");
   }
+
   function openView(p){
-    $("vTitle").textContent = p.title||"Aviso";
-    $("vBody").textContent  = p.body||"";
+    const title = (p.title||"").trim();
+    const body  = (p.body||"").trim();
+
+    // en el modal: si no hay titulo, mostramos "Aviso"
+    $("vTitle").textContent = title || "Aviso";
+    $("vBody").textContent  = body || "";
+
+    if(p.imageUrl){
+      $("vImg").src = p.imageUrl;
+      $("vImg").style.display = "block";
+    }else{
+      $("vImg").style.display = "none";
+      $("vImg").src = "";
+    }
     $("viewM").classList.add("show");
   }
-  $("vClose").onclick=()=>$("viewM").classList.remove("show");
+  $("vClose").onclick = ()=> $("viewM").classList.remove("show");
 
   onSnapshot(q,(snap)=>{
-    dashPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    dashPosts = snap.docs.map(d=>({ id:d.id, ...d.data() }));
     renderDash();
-  },()=>setDashStatus("Error Firestore","bad"));
+  },()=> setDashStatus("Error Firestore","bad"));
 
-  // modal nuevo dashboard
-  $("newDash").onclick=()=>{ $("fTitle").value=""; $("fBody").value=""; $("saveStatus").textContent=""; $("editM").classList.add("show"); };
-  $("eCancel").onclick=()=>$("editM").classList.remove("show");
+  // ======= crear/editar con imagen (Storage) =======
+  let editMode = "create"; // "create" | "edit"
+  let editingPost = null;  // post actual
 
-  $("eSave").onclick=async()=>{
-    const title=$("fTitle").value.trim();
-    const body=$("fBody").value.trim();
-    if(!title||!body){ $("saveStatus").textContent="Falta título o texto"; return; }
-    $("saveStatus").textContent="Guardando...";
-    await addDoc(postsRef,{ title, body, authorEmail: email, authorRole: role, createdAt: serverTimestamp() });
+  function resetEditForm(){
+    $("fTitle").value = "";
+    $("fBody").value  = "";
+    $("fImg").value   = "";
+    $("imgPreview").style.display = "none";
+    $("imgPreview").src = "";
+    $("saveStatus").textContent = "";
+    $("saveStatus").className = "status";
+  }
+
+  function setSaveStatus(t,type=""){
+    $("saveStatus").textContent = t || "";
+    $("saveStatus").className = "status " + (type||"");
+  }
+
+  function showEditModal(){
+    $("editM").classList.add("show");
+  }
+  function hideEditModal(){
     $("editM").classList.remove("show");
+  }
+
+  // preview imagen
+  $("fImg").addEventListener("change", ()=>{
+    const f = $("fImg").files?.[0];
+    if(!f){
+      $("imgPreview").style.display="none";
+      $("imgPreview").src="";
+      return;
+    }
+    const url = URL.createObjectURL(f);
+    $("imgPreview").src = url;
+    $("imgPreview").style.display="block";
+  });
+
+  // abrir nuevo
+  $("newDash").onclick = ()=>{
+    if(!canEdit()) return;
+    editMode = "create";
+    editingPost = null;
+    $("editTitle").textContent = "Nuevo aviso (Dashboard)";
+    resetEditForm();
+    showEditModal();
   };
+
+  // abrir editar
+  function openEdit(p){
+    if(!canEdit()) return;
+    editMode = "edit";
+    editingPost = p;
+
+    $("editTitle").textContent = "Editar aviso (Dashboard)";
+    $("fTitle").value = (p.title||"");
+    $("fBody").value  = (p.body||"");
+    $("fImg").value   = "";
+
+    // preview con imagen actual
+    if(p.imageUrl){
+      $("imgPreview").src = p.imageUrl;
+      $("imgPreview").style.display="block";
+    }else{
+      $("imgPreview").style.display="none";
+      $("imgPreview").src = "";
+    }
+
+    setSaveStatus("Podés cambiar el título/texto, y si querés reemplazar la imagen subí una nueva.");
+    showEditModal();
+  }
+
+  $("eCancel").onclick = ()=> hideEditModal();
+
+  // subir imagen a Storage
+  function randId(len=10){
+    const chars="abcdefghijklmnopqrstuvwxyz0123456789";
+    let out="";
+    for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
+    return out;
+  }
+
+  async function uploadPostImage(file){
+    // ruta única
+    const safeName = (file.name||"img").replace(/[^\w.\-]+/g,"_");
+    const path = `dashboard_posts/${Date.now()}_${randId(8)}_${safeName}`;
+    const r = sRef(st, path);
+
+    // sube
+    await uploadBytes(r, file, { contentType: file.type || "image/*" });
+    const url = await getDownloadURL(r);
+
+    return { imageUrl:url, imagePath:path };
+  }
+
+  async function deletePostImageByPath(path){
+    if(!path) return;
+    const r = sRef(st, path);
+    try{
+      await deleteObject(r);
+    }catch(e){
+      // si ya no existe o no hay permisos, no rompemos todo
+      console.warn("No se pudo borrar imagen:", e?.message || e);
+    }
+  }
+
+  // guardar crear/editar
+  $("eSave").onclick = async ()=>{
+    if(!canEdit()) return;
+
+    const title = $("fTitle").value.trim(); // opcional
+    const body  = $("fBody").value.trim();  // opcional
+    const file  = $("fImg").files?.[0] || null;
+
+    try{
+      $("eSave").disabled = true;
+
+      if(editMode === "create"){
+        if(!file){
+          setSaveStatus("La imagen es obligatoria.", "bad");
+          return;
+        }
+        setSaveStatus("Subiendo imagen...", "");
+        const up = await uploadPostImage(file);
+
+        setSaveStatus("Guardando aviso...", "");
+        await addDoc(postsRef,{
+          title: title || "",
+          body:  body  || "",
+          imageUrl: up.imageUrl,
+          imagePath: up.imagePath,
+          authorEmail: email,
+          authorRole: role,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+
+        hideEditModal();
+        resetEditForm();
+        return;
+      }
+
+      // edit
+      if(editMode === "edit" && editingPost?.id){
+        const refDoc = doc(db, "dashboard_posts", editingPost.id);
+
+        // imagen obligatoria: en editar, si no sube nueva, usamos la existente.
+        const hasExisting = !!editingPost.imageUrl;
+        if(!hasExisting && !file){
+          setSaveStatus("La imagen es obligatoria (subí una).", "bad");
+          return;
+        }
+
+        let newImageUrl  = editingPost.imageUrl || "";
+        let newImagePath = editingPost.imagePath || "";
+
+        // si cargó nueva imagen, subimos y luego borramos la vieja
+        if(file){
+          setSaveStatus("Subiendo nueva imagen...", "");
+          const up = await uploadPostImage(file);
+
+          // borrar vieja luego de subir la nueva
+          const oldPath = editingPost.imagePath;
+          newImageUrl  = up.imageUrl;
+          newImagePath = up.imagePath;
+
+          setSaveStatus("Actualizando aviso...", "");
+          await updateDoc(refDoc,{
+            title: title || "",
+            body:  body  || "",
+            imageUrl: newImageUrl,
+            imagePath: newImagePath,
+            updatedAt: serverTimestamp()
+          });
+
+          // borrar imagen anterior
+          await deletePostImageByPath(oldPath);
+
+          hideEditModal();
+          return;
+        }
+
+        // sin nueva imagen, solo actualiza texto
+        setSaveStatus("Actualizando aviso...", "");
+        await updateDoc(refDoc,{
+          title: title || "",
+          body:  body  || "",
+          updatedAt: serverTimestamp()
+        });
+
+        hideEditModal();
+      }
+    }catch(err){
+      console.error(err);
+      setSaveStatus("Error: " + (err?.message || "No se pudo guardar"), "bad");
+    }finally{
+      $("eSave").disabled = false;
+    }
+  };
+
+  // ======= eliminar =======
+  async function askDelete(p){
+    if(!canEdit()) return;
+    const t = (p.title||"").trim();
+    const ok = confirm(`¿Eliminar este aviso?\n${t ? "• " + t : ""}\n\nEsto lo borra de Firebase.`);
+    if(!ok) return;
+
+    try{
+      setDashStatus("Eliminando...", "");
+      // borra doc
+      await deleteDoc(doc(db,"dashboard_posts",p.id));
+      // borra imagen
+      await deletePostImageByPath(p.imagePath);
+      setDashStatus("Eliminado", "ok");
+      setTimeout(()=>setDashStatus(""), 1200);
+    }catch(err){
+      console.error(err);
+      setDashStatus("No se pudo eliminar: " + (err?.message || ""), "bad");
+    }
+  }
 </script>
 </body>
 </html>
