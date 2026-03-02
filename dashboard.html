@@ -447,10 +447,7 @@
     const body  = (p.body||"").trim();
     const hasTitle = !!title;
     const hasBody  = !!body;
-
-    // Si no hay titulo ni texto, no mostramos el bloque de texto
     if(!hasTitle && !hasBody) return "";
-
     let html = `<div class="cardText">`;
     if(hasTitle) html += `<b>${esc(title)}</b>`;
     if(hasBody){
@@ -464,20 +461,15 @@
   function renderDash(){
     const wrap = $("dashPosts");
     wrap.innerHTML = "";
-
     dashPosts.forEach(p=>{
       const div = document.createElement("div");
       div.className = "card";
-
       const textHtml = formatCardText(p);
-
-      // acciones editar/eliminar
       const actionsHtml = canEdit() ? `
         <div class="cardActions">
           <button class="chipBtn" data-act="edit">Editar</button>
           <button class="chipBtn danger" data-act="del">Eliminar</button>
         </div>` : "";
-
       div.innerHTML = `
         <div class="cardHead">
           ${textHtml || `<div class="cardText"><b> </b></div>`}
@@ -485,18 +477,14 @@
         </div>
         ${p.imageUrl ? `<img class="postImg" src="${esc(p.imageUrl)}" alt="">` : ""}
       `;
-
-      // click para ver (excepto cuando clickean botones)
       div.addEventListener("click",(e)=>{
         const act = e.target?.dataset?.act;
         if(act === "edit"){ e.stopPropagation(); openEdit(p); return; }
         if(act === "del"){  e.stopPropagation(); askDelete(p); return; }
         openView(p);
       });
-
       wrap.appendChild(div);
     });
-
     if(!dashPosts.length) setDashStatus("Avisos y novedades generales");
     else setDashStatus("");
   }
@@ -504,11 +492,8 @@
   function openView(p){
     const title = (p.title||"").trim();
     const body  = (p.body||"").trim();
-
-    // en el modal: si no hay titulo, mostramos "Aviso"
     $("vTitle").textContent = title || "Aviso";
     $("vBody").textContent  = body || "";
-
     if(p.imageUrl){
       $("vImg").src = p.imageUrl;
       $("vImg").style.display = "block";
@@ -523,11 +508,14 @@
   onSnapshot(q,(snap)=>{
     dashPosts = snap.docs.map(d=>({ id:d.id, ...d.data() }));
     renderDash();
-  },()=> setDashStatus("Error Firestore","bad"));
+  },(err)=>{
+    console.error(err);
+    setDashStatus("Error Firestore","bad");
+  });
 
   // ======= crear/editar con imagen (Storage) =======
-  let editMode = "create"; // "create" | "edit"
-  let editingPost = null;  // post actual
+  let editMode = "create";
+  let editingPost = null;
 
   function resetEditForm(){
     $("fTitle").value = "";
@@ -544,14 +532,9 @@
     $("saveStatus").className = "status " + (type||"");
   }
 
-  function showEditModal(){
-    $("editM").classList.add("show");
-  }
-  function hideEditModal(){
-    $("editM").classList.remove("show");
-  }
+  function showEditModal(){ $("editM").classList.add("show"); }
+  function hideEditModal(){ $("editM").classList.remove("show"); }
 
-  // preview imagen
   $("fImg").addEventListener("change", ()=>{
     const f = $("fImg").files?.[0];
     if(!f){
@@ -564,7 +547,6 @@
     $("imgPreview").style.display="block";
   });
 
-  // abrir nuevo
   $("newDash").onclick = ()=>{
     if(!canEdit()) return;
     editMode = "create";
@@ -574,18 +556,14 @@
     showEditModal();
   };
 
-  // abrir editar
   function openEdit(p){
     if(!canEdit()) return;
     editMode = "edit";
     editingPost = p;
-
     $("editTitle").textContent = "Editar aviso (Dashboard)";
     $("fTitle").value = (p.title||"");
     $("fBody").value  = (p.body||"");
     $("fImg").value   = "";
-
-    // preview con imagen actual
     if(p.imageUrl){
       $("imgPreview").src = p.imageUrl;
       $("imgPreview").style.display="block";
@@ -593,14 +571,12 @@
       $("imgPreview").style.display="none";
       $("imgPreview").src = "";
     }
-
     setSaveStatus("Podés cambiar el título/texto, y si querés reemplazar la imagen subí una nueva.");
     showEditModal();
   }
 
   $("eCancel").onclick = ()=> hideEditModal();
 
-  // subir imagen a Storage
   function randId(len=10){
     const chars="abcdefghijklmnopqrstuvwxyz0123456789";
     let out="";
@@ -609,35 +585,26 @@
   }
 
   async function uploadPostImage(file){
-    // ruta única
     const safeName = (file.name||"img").replace(/[^\w.\-]+/g,"_");
     const path = `dashboard_posts/${Date.now()}_${randId(8)}_${safeName}`;
     const r = sRef(st, path);
-
-    // sube
     await uploadBytes(r, file, { contentType: file.type || "image/*" });
     const url = await getDownloadURL(r);
-
     return { imageUrl:url, imagePath:path };
   }
 
   async function deletePostImageByPath(path){
     if(!path) return;
     const r = sRef(st, path);
-    try{
-      await deleteObject(r);
-    }catch(e){
-      // si ya no existe o no hay permisos, no rompemos todo
-      console.warn("No se pudo borrar imagen:", e?.message || e);
-    }
+    try{ await deleteObject(r); }
+    catch(e){ console.warn("No se pudo borrar imagen:", e?.message || e); }
   }
 
-  // guardar crear/editar
   $("eSave").onclick = async ()=>{
     if(!canEdit()) return;
 
-    const title = $("fTitle").value.trim(); // opcional
-    const body  = $("fBody").value.trim();  // opcional
+    const title = $("fTitle").value.trim();
+    const body  = $("fBody").value.trim();
     const file  = $("fImg").files?.[0] || null;
 
     try{
@@ -648,8 +615,16 @@
           setSaveStatus("La imagen es obligatoria.", "bad");
           return;
         }
+
         setSaveStatus("Subiendo imagen...", "");
-        const up = await uploadPostImage(file);
+        let up;
+        try{
+          up = await uploadPostImage(file);
+        }catch(e){
+          console.error(e);
+          setSaveStatus("Error subiendo: " + (e?.code || e?.message || e), "bad");
+          return;
+        }
 
         setSaveStatus("Guardando aviso...", "");
         await addDoc(postsRef,{
@@ -668,47 +643,42 @@
         return;
       }
 
-      // edit
       if(editMode === "edit" && editingPost?.id){
         const refDoc = doc(db, "dashboard_posts", editingPost.id);
 
-        // imagen obligatoria: en editar, si no sube nueva, usamos la existente.
         const hasExisting = !!editingPost.imageUrl;
         if(!hasExisting && !file){
           setSaveStatus("La imagen es obligatoria (subí una).", "bad");
           return;
         }
 
-        let newImageUrl  = editingPost.imageUrl || "";
-        let newImagePath = editingPost.imagePath || "";
-
-        // si cargó nueva imagen, subimos y luego borramos la vieja
         if(file){
           setSaveStatus("Subiendo nueva imagen...", "");
-          const up = await uploadPostImage(file);
+          let up;
+          try{
+            up = await uploadPostImage(file);
+          }catch(e){
+            console.error(e);
+            setSaveStatus("Error subiendo: " + (e?.code || e?.message || e), "bad");
+            return;
+          }
 
-          // borrar vieja luego de subir la nueva
           const oldPath = editingPost.imagePath;
-          newImageUrl  = up.imageUrl;
-          newImagePath = up.imagePath;
 
           setSaveStatus("Actualizando aviso...", "");
           await updateDoc(refDoc,{
             title: title || "",
             body:  body  || "",
-            imageUrl: newImageUrl,
-            imagePath: newImagePath,
+            imageUrl: up.imageUrl,
+            imagePath: up.imagePath,
             updatedAt: serverTimestamp()
           });
 
-          // borrar imagen anterior
           await deletePostImageByPath(oldPath);
-
           hideEditModal();
           return;
         }
 
-        // sin nueva imagen, solo actualiza texto
         setSaveStatus("Actualizando aviso...", "");
         await updateDoc(refDoc,{
           title: title || "",
@@ -726,7 +696,6 @@
     }
   };
 
-  // ======= eliminar =======
   async function askDelete(p){
     if(!canEdit()) return;
     const t = (p.title||"").trim();
@@ -735,9 +704,7 @@
 
     try{
       setDashStatus("Eliminando...", "");
-      // borra doc
       await deleteDoc(doc(db,"dashboard_posts",p.id));
-      // borra imagen
       await deletePostImageByPath(p.imagePath);
       setDashStatus("Eliminado", "ok");
       setTimeout(()=>setDashStatus(""), 1200);
