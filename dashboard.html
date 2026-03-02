@@ -226,7 +226,7 @@
     }
     .paperBody{padding:16px; white-space:pre-wrap; line-height:1.55}
 
-    .input,.area,.file{
+    .input,.area{
       width:100%; padding:12px 14px; border-radius:14px;
       border:1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.06);
@@ -336,8 +336,11 @@
         <textarea class="area" id="fBody" placeholder="Texto (opcional)"></textarea>
 
         <div class="previewWrap">
-          <input class="file" id="fImg" type="file" accept="image/*">
-          <div class="hint" id="imgHint">Imagen obligatoria. Recomendado: JPG/PNG/WebP, 1200px de ancho aprox.</div>
+          <input class="input" id="fImgUrl" placeholder="Pegá aquí el link de la imagen (obligatorio)  https://...">
+          <div class="hint" id="imgHint">
+            Imagen obligatoria por URL. Recomendado: JPG/PNG/WebP.
+            Tip: subila a Imgur / Cloudinary / Drive público y pegá el link directo.
+          </div>
           <img id="imgPreview" class="previewImg" alt="" style="display:none">
         </div>
 
@@ -409,15 +412,12 @@
     renderCourses(visible);
   })();
 
-  // ======= firebase =======
+  // ======= firebase (solo Firestore) =======
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import {
     getFirestore, collection, addDoc, query, orderBy, onSnapshot,
     serverTimestamp, doc, updateDoc, deleteDoc
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-  import {
-    getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject
-  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCygD9ISTn-mqAt5WacS1aIAVb1TunoG00",
@@ -430,7 +430,6 @@
 
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
-  const st  = getStorage(app);
 
   // ======= dashboard avisos (Firestore) =======
   const postsRef = collection(db,"dashboard_posts");
@@ -513,18 +512,17 @@
     setDashStatus("Error Firestore","bad");
   });
 
-  // ======= crear/editar con imagen (Storage) =======
+  // ======= crear/editar con imagen por URL =======
   let editMode = "create";
   let editingPost = null;
 
   function resetEditForm(){
     $("fTitle").value = "";
     $("fBody").value  = "";
-    $("fImg").value   = "";
+    $("fImgUrl").value = "";
     $("imgPreview").style.display = "none";
     $("imgPreview").src = "";
-    $("saveStatus").textContent = "";
-    $("saveStatus").className = "status";
+    setSaveStatus("", "");
   }
 
   function setSaveStatus(t,type=""){
@@ -535,17 +533,28 @@
   function showEditModal(){ $("editM").classList.add("show"); }
   function hideEditModal(){ $("editM").classList.remove("show"); }
 
-  $("fImg").addEventListener("change", ()=>{
-    const f = $("fImg").files?.[0];
-    if(!f){
-      $("imgPreview").style.display="none";
-      $("imgPreview").src="";
+  function isValidHttpUrl(str){
+    try{
+      const u = new URL(str);
+      return u.protocol === "http:" || u.protocol === "https:";
+    }catch(_){
+      return false;
+    }
+  }
+
+  function updatePreviewFromUrl(){
+    const url = $("fImgUrl").value.trim();
+    if(!isValidHttpUrl(url)){
+      $("imgPreview").style.display = "none";
+      $("imgPreview").src = "";
       return;
     }
-    const url = URL.createObjectURL(f);
     $("imgPreview").src = url;
-    $("imgPreview").style.display="block";
-  });
+    $("imgPreview").style.display = "block";
+  }
+
+  $("fImgUrl").addEventListener("input", updatePreviewFromUrl);
+  $("fImgUrl").addEventListener("change", updatePreviewFromUrl);
 
   $("newDash").onclick = ()=>{
     if(!canEdit()) return;
@@ -563,75 +572,45 @@
     $("editTitle").textContent = "Editar aviso (Dashboard)";
     $("fTitle").value = (p.title||"");
     $("fBody").value  = (p.body||"");
-    $("fImg").value   = "";
-    if(p.imageUrl){
-      $("imgPreview").src = p.imageUrl;
-      $("imgPreview").style.display="block";
-    }else{
-      $("imgPreview").style.display="none";
-      $("imgPreview").src = "";
-    }
-    setSaveStatus("Podés cambiar el título/texto, y si querés reemplazar la imagen subí una nueva.");
+    $("fImgUrl").value = (p.imageUrl||"");
+    updatePreviewFromUrl();
+    setSaveStatus("Podés cambiar título/texto y también el link de la imagen.");
     showEditModal();
   }
 
   $("eCancel").onclick = ()=> hideEditModal();
-
-  function randId(len=10){
-    const chars="abcdefghijklmnopqrstuvwxyz0123456789";
-    let out="";
-    for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
-    return out;
-  }
-
-  async function uploadPostImage(file){
-    const safeName = (file.name||"img").replace(/[^\w.\-]+/g,"_");
-    const path = `dashboard_posts/${Date.now()}_${randId(8)}_${safeName}`;
-    const r = sRef(st, path);
-    await uploadBytes(r, file, { contentType: file.type || "image/*" });
-    const url = await getDownloadURL(r);
-    return { imageUrl:url, imagePath:path };
-  }
-
-  async function deletePostImageByPath(path){
-    if(!path) return;
-    const r = sRef(st, path);
-    try{ await deleteObject(r); }
-    catch(e){ console.warn("No se pudo borrar imagen:", e?.message || e); }
-  }
 
   $("eSave").onclick = async ()=>{
     if(!canEdit()) return;
 
     const title = $("fTitle").value.trim();
     const body  = $("fBody").value.trim();
-    const file  = $("fImg").files?.[0] || null;
+    const imageUrl = $("fImgUrl").value.trim();
 
     try{
       $("eSave").disabled = true;
 
+      if(!isValidHttpUrl(imageUrl)){
+        setSaveStatus("Pegá un link válido (http/https). La imagen es obligatoria.", "bad");
+        return;
+      }
+
+      setSaveStatus("Verificando imagen...", "");
+      // mini-check: intenta cargar la imagen (no siempre es perfecto, pero ayuda)
+      await new Promise((res, rej)=>{
+        const img = new Image();
+        img.onload = ()=>res(true);
+        img.onerror = ()=>rej(new Error("No se pudo cargar la imagen (link no directo o privado)."));
+        img.referrerPolicy = "no-referrer";
+        img.src = imageUrl;
+      });
+
       if(editMode === "create"){
-        if(!file){
-          setSaveStatus("La imagen es obligatoria.", "bad");
-          return;
-        }
-
-        setSaveStatus("Subiendo imagen...", "");
-        let up;
-        try{
-          up = await uploadPostImage(file);
-        }catch(e){
-          console.error(e);
-          setSaveStatus("Error subiendo: " + (e?.code || e?.message || e), "bad");
-          return;
-        }
-
         setSaveStatus("Guardando aviso...", "");
         await addDoc(postsRef,{
           title: title || "",
           body:  body  || "",
-          imageUrl: up.imageUrl,
-          imagePath: up.imagePath,
+          imageUrl,
           authorEmail: email,
           authorRole: role,
           createdAt: serverTimestamp(),
@@ -644,45 +623,11 @@
       }
 
       if(editMode === "edit" && editingPost?.id){
-        const refDoc = doc(db, "dashboard_posts", editingPost.id);
-
-        const hasExisting = !!editingPost.imageUrl;
-        if(!hasExisting && !file){
-          setSaveStatus("La imagen es obligatoria (subí una).", "bad");
-          return;
-        }
-
-        if(file){
-          setSaveStatus("Subiendo nueva imagen...", "");
-          let up;
-          try{
-            up = await uploadPostImage(file);
-          }catch(e){
-            console.error(e);
-            setSaveStatus("Error subiendo: " + (e?.code || e?.message || e), "bad");
-            return;
-          }
-
-          const oldPath = editingPost.imagePath;
-
-          setSaveStatus("Actualizando aviso...", "");
-          await updateDoc(refDoc,{
-            title: title || "",
-            body:  body  || "",
-            imageUrl: up.imageUrl,
-            imagePath: up.imagePath,
-            updatedAt: serverTimestamp()
-          });
-
-          await deletePostImageByPath(oldPath);
-          hideEditModal();
-          return;
-        }
-
         setSaveStatus("Actualizando aviso...", "");
-        await updateDoc(refDoc,{
+        await updateDoc(doc(db,"dashboard_posts",editingPost.id),{
           title: title || "",
           body:  body  || "",
+          imageUrl,
           updatedAt: serverTimestamp()
         });
 
@@ -699,13 +644,12 @@
   async function askDelete(p){
     if(!canEdit()) return;
     const t = (p.title||"").trim();
-    const ok = confirm(`¿Eliminar este aviso?\n${t ? "• " + t : ""}\n\nEsto lo borra de Firebase.`);
+    const ok = confirm(`¿Eliminar este aviso?\n${t ? "• " + t : ""}\n\nEsto lo borra de Firestore.`);
     if(!ok) return;
 
     try{
       setDashStatus("Eliminando...", "");
       await deleteDoc(doc(db,"dashboard_posts",p.id));
-      await deletePostImageByPath(p.imagePath);
       setDashStatus("Eliminado", "ok");
       setTimeout(()=>setDashStatus(""), 1200);
     }catch(err){
