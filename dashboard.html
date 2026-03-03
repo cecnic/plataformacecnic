@@ -1,3 +1,4 @@
+<!-- dashboard.html (reconstruido con el MISMO estilo glass del login: pills, chips, colores, noise) -->
 <!doctype html>
 <html lang="es">
 <head>
@@ -8,52 +9,103 @@
   <meta name="color-scheme" content="dark light">
   <style>
     :root{
-      --bg1:#070b16; --bg2:#0b1633;
-      --glass:rgba(255,255,255,.10);
-      --glass2:rgba(255,255,255,.14);
-      --stroke:rgba(255,255,255,.16);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.70);
-      --shadow:0 25px 70px rgba(0,0,0,.45);
-      --radius:22px;
-      --blue:#2fb0ff;
-      --ok:rgba(60,255,160,.85);
-      --bad:rgba(255,90,110,.9);
+      --bg1:#0b1220;
+      --bg2:#0a0f1a;
+
+      --glass: rgba(255,255,255,.08);
+      --glass2: rgba(255,255,255,.12);
+      --stroke: rgba(255,255,255,.18);
+
+      --text:#eaf0ff;
+      --muted: rgba(234,240,255,.72);
+
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 26px;
+
+      --focus: rgba(120,160,255,.35);
+
+      --good: rgba(70,255,170,.95);
+      --bad: rgba(255,80,120,.95);
+
+      --accentA: rgba(120,160,255,.96);
+      --accentB: rgba(255,110,180,.86);
+      --pillBg: rgba(255,255,255,.05);
+      --pillBd: rgba(255,255,255,.10);
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
+
     body{
       margin:0;
-      font-family:system-ui,Segoe UI,Roboto,Arial;
       color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue";
       background:
-        radial-gradient(1200px 700px at 20% 15%, rgba(120,140,255,.35), transparent 55%),
-        radial-gradient(1100px 650px at 85% 25%, rgba(255,110,190,.22), transparent 60%),
-        radial-gradient(900px 600px at 50% 95%, rgba(90,255,210,.16), transparent 55%),
-        linear-gradient(160deg,var(--bg1),var(--bg2));
+        radial-gradient(1200px 800px at 25% 20%, rgba(80,140,255,.22), transparent 55%),
+        radial-gradient(900px 700px at 75% 30%, rgba(255,110,180,.18), transparent 55%),
+        radial-gradient(900px 700px at 60% 80%, rgba(70,255,170,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    .noise{
+      position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay;
+      opacity:.22;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .layout{
+      position:relative;
+      z-index:1;
+      height:100%;
       display:grid;
       grid-template-columns: 360px 1fr;
       gap:16px;
       padding:16px;
-      overflow:hidden;
+      min-height:0;
     }
-    .panel,.main{
-      border-radius:var(--radius);
-      background:linear-gradient(180deg,var(--glass2),var(--glass));
-      border:1px solid var(--stroke);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(16px);
+
+    .shell{
+      border-radius: var(--radius2);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       overflow:hidden;
       min-height:0;
     }
-    .panelTop{
+
+    .panelTop,.mainTop{
       padding:16px;
+      background: rgba(0,0,0,.18);
       border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
     }
-    .panelTop h1{margin:0;font-size:16px;font-weight:900}
-    .panelTop p{margin:6px 0 0;color:var(--muted);font-size:12px}
+
+    .panelTop h1{
+      margin:0;
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .panelTop p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
     .who{
+      width:100%;
       margin-top:12px;
       display:flex;
       align-items:center;
@@ -62,81 +114,172 @@
       padding:12px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
+      background: rgba(255,255,255,.06);
     }
-    .who b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
-    .who span{display:block;font-size:12px;color:var(--muted)}
-    .btn{
-      border:none; cursor:pointer;
+    .who b{
+      display:block;
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:190px
+    }
+    .who span{
+      display:block;
+      font-size:12px;
+      color:var(--muted)
+    }
+
+    .panelBody{
+      padding:12px;
+      overflow:auto;
+      min-height:0;
+    }
+
+    .pill{
+      display:flex; gap:10px; align-items:flex-start;
       padding:10px 12px;
-      border-radius:14px;
-      font-weight:900;
-      color:#0b0f1a;
-      background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.70));
+      border-radius: 14px;
+      background: var(--pillBg);
+      border: 1px solid var(--pillBd);
+    }
+
+    .dot{
+      width:10px; height:10px; border-radius: 999px;
+      background: var(--good);
+      box-shadow: 0 0 0 4px rgba(70,255,170,.15);
+      margin-top:3px;
+      flex:0 0 auto;
+    }
+
+    .chip{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(234,240,255,.85);
+      font-weight: 800;
+      letter-spacing:.2px;
+      font-size:12px;
+      user-select:none;
       white-space:nowrap;
     }
+
+    .btn{
+      border:0; cursor:pointer;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight: 900;
+      letter-spacing:.2px;
+      color:#08101f;
+      background: linear-gradient(135deg, var(--accentA), var(--accentB));
+      box-shadow: 0 18px 50px rgba(120,160,255,.18);
+      transition: transform .12s ease, filter .12s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+    .btn:active{ transform: translateY(0); filter: brightness(.98); }
+
     .btn.ghost{
-      background:rgba(255,255,255,.08);
-      color:rgba(255,255,255,.86);
-      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow:none;
     }
     .btn.danger{
-      background:rgba(255,90,110,.15);
-      color:rgba(255,255,255,.92);
-      border:1px solid rgba(255,90,110,.35);
+      background: rgba(255,80,120,.14);
+      color: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,80,120,.30);
+      box-shadow:none;
     }
-    .panelBody{padding:12px; overflow:auto; min-height:0}
+
     .courseLink{
-      display:flex; gap:10px; align-items:flex-start;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
       padding:10px 10px;
       border-radius:14px;
       cursor:pointer;
       text-decoration:none;
-      color:var(--blue);
+      color: rgba(170,200,255,.95);
       border:1px solid transparent;
       transition: background .15s ease, border .15s ease, transform .15s ease;
       line-height:1.1;
     }
     .courseLink:hover{
-      background:rgba(255,255,255,.06);
-      border-color:rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.12);
       transform: translateY(-1px);
     }
-    .cap{width:18px;height:18px;flex:0 0 auto;margin-top:2px}
-    .courseText b{display:block;font-weight:900;font-size:14px;color:var(--blue)}
+    .cap{ width:18px; height:18px; flex:0 0 auto; margin-top:2px; opacity:.95 }
+    .courseText b{
+      display:block;
+      font-weight: 950;
+      font-size: 14px;
+      color: rgba(170,200,255,.95);
+    }
+
     .empty{
       margin-top:12px;
       padding:12px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.14);
-      color:rgba(255,255,255,.85);
+      background: rgba(0,0,0,.14);
+      color: rgba(255,255,255,.85);
       font-size:13px;
       display:none;
     }
 
-    .main{display:flex; flex-direction:column; min-height:0}
-    .mainTop{
-      padding:18px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
+    .main{
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
+      flex-direction:column;
+      min-height:0;
     }
-    .mainTop h2{margin:0;font-size:18px;font-weight:1000}
-    .mini{color:var(--muted);font-size:12px}
-    .mainBody{padding:18px; overflow:auto; min-height:0}
+    .mainTop h2{
+      margin:0;
+      font-size:18px;
+      font-weight:1000;
+      letter-spacing:.2px;
+    }
+    .mini{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:6px;
+    }
+
+    .mainBody{
+      padding:18px;
+      overflow:auto;
+      min-height:0;
+    }
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      align-items:flex-end;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      max-width:1100px;
+      margin-bottom:12px;
+    }
 
     .sectionTitle{
       font-size:38px;
       font-weight:1000;
-      margin:0 0 12px 0;
+      margin:0;
       color: rgba(255,255,255,1);
       text-align:left;
+      letter-spacing:.2px;
     }
+
+    .status{
+      font-size:12px;
+      color:var(--muted);
+      min-height:16px;
+      text-align:right;
+    }
+    .status.ok{ color: var(--good); }
+    .status.bad{ color: var(--bad); }
 
     .gridCards{
       display:grid;
@@ -144,7 +287,8 @@
       gap:12px;
       max-width:1100px;
     }
-    .card{
+
+    .cardPost{
       padding:14px;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.12);
@@ -153,7 +297,10 @@
       transition: transform .15s ease, background .15s ease;
       overflow:hidden;
     }
-    .card:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); }
+    .cardPost:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.06);
+    }
 
     .cardHead{
       display:flex;
@@ -162,43 +309,47 @@
       gap:10px;
       margin-bottom:10px;
     }
-    .cardText b{display:block; font-size:14px}
-    .cardText span{display:block; margin-top:7px; color:var(--muted); font-size:12px; line-height:1.35}
-    .cardActions{display:flex; gap:8px; flex:0 0 auto}
+    .cardText b{ display:block; font-size:14px; font-weight:950; }
+    .cardText span{
+      display:block;
+      margin-top:7px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35
+    }
+
+    .cardActions{ display:flex; gap:8px; flex:0 0 auto; }
     .chipBtn{
-      border:none; cursor:pointer;
+      border:none;
+      cursor:pointer;
       padding:8px 10px;
       border-radius:12px;
       font-weight:900;
-      background:rgba(255,255,255,.08);
+      background: rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.14);
-      color:rgba(255,255,255,.88);
+      color: rgba(255,255,255,.88);
       font-size:12px;
       white-space:nowrap;
+      transition: transform .12s ease, filter .12s ease;
     }
+    .chipBtn:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+    .chipBtn:active{ transform: translateY(0); filter: brightness(.98); }
     .chipBtn.danger{
-      background:rgba(255,90,110,.14);
-      border:1px solid rgba(255,90,110,.30);
+      background: rgba(255,80,120,.14);
+      border:1px solid rgba(255,80,120,.30);
     }
 
     .postImg{
       width:100%;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);
+      background: rgba(0,0,0,.18);
       display:block;
       max-height:360px;
       object-fit:cover;
     }
 
-    .toolbar{
-      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
-      max-width:1100px;
-      margin-bottom:12px;
-    }
-    .status{font-size:12px;color:var(--muted);min-height:16px}
-    .status.ok{color:var(--ok)} .status.bad{color:var(--bad)}
-
+    /* modal */
     .modal{
       position:fixed; inset:0;
       display:none; place-items:center;
@@ -207,7 +358,8 @@
       padding:18px;
       z-index:50;
     }
-    .modal.show{display:grid}
+    .modal.show{ display:grid; }
+
     .paper{
       width:min(920px, 100%);
       max-height: 86vh;
@@ -217,23 +369,47 @@
       background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
       box-shadow: 0 30px 90px rgba(0,0,0,.55);
     }
+
     .paperTop{
       position:sticky; top:0;
       padding:12px 14px;
       background: rgba(0,0,0,.28);
       border-bottom:1px solid rgba(255,255,255,.10);
-      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
     }
-    .paperBody{padding:16px; white-space:pre-wrap; line-height:1.55}
+    .paperBody{
+      padding:16px;
+      white-space:pre-wrap;
+      line-height:1.55;
+    }
 
     .input,.area{
-      width:100%; padding:12px 14px; border-radius:14px;
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
       border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color:var(--text); outline:none;
+      background: rgba(0,0,0,.22);
+      color:var(--text);
+      outline:none;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
+      transition:.18s ease;
     }
-    .area{min-height:140px; resize:vertical}
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .input:focus,.area:focus{
+      border-color: rgba(120,160,255,.55);
+      box-shadow: 0 0 0 4px var(--focus), inset 0 0 0 1px rgba(0,0,0,.18);
+    }
+    .area{ min-height:140px; resize:vertical; }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
 
     .hint{
       margin-top:10px;
@@ -241,68 +417,88 @@
       font-size:12px;
       line-height:1.35;
     }
-    .previewWrap{
-      margin-top:12px;
-      display:grid;
-      gap:10px;
-    }
+
+    .previewWrap{ margin-top:12px; display:grid; gap:10px; }
+
     .previewImg{
       width:100%;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);
+      background: rgba(0,0,0,.18);
       display:block;
       max-height:420px;
       object-fit:cover;
     }
 
     @media (max-width:980px){
-      body{grid-template-columns:1fr; overflow:auto}
-      .gridCards{grid-template-columns:1fr}
-      .sectionTitle{font-size:30px}
+      body{ overflow:auto; }
+      .layout{ grid-template-columns:1fr; }
+      .gridCards{ grid-template-columns:1fr; }
+      .sectionTitle{ font-size:30px; }
     }
   </style>
 </head>
 
 <body>
-  <aside class="panel">
-    <div class="panelTop">
-      <h1>Mis cursos</h1>
-      <p id="sub">—</p>
-      <div class="who">
-        <div style="min-width:0">
-          <b id="name">—</b>
-          <span id="role">—</span>
+  <div class="noise"></div>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="shell">
+      <div class="panelTop">
+        <div>
+          <h1>Mis cursos</h1>
+          <p id="sub">—</p>
         </div>
-        <button class="btn ghost" id="logout">Salir</button>
-      </div>
-    </div>
-    <div class="panelBody">
-      <div id="courseList"></div>
-      <div id="empty" class="empty">No tenés cursos asignados.</div>
-    </div>
-  </aside>
 
-  <main class="main">
-    <div class="mainTop">
-      <div>
-        <h2>Inicio</h2>
-        <div class="mini">Dashboard</div>
+        <div class="who">
+          <div style="min-width:0">
+            <b id="name">—</b>
+            <span id="role">—</span>
+          </div>
+          <button class="btn ghost" id="logout">Salir</button>
+        </div>
       </div>
-      <div class="row">
-        <button class="btn ghost" id="goAvisos">Avisos</button>
-        <button class="btn" id="newDash" style="display:none">+ Aviso</button>
-      </div>
-    </div>
 
-    <div class="mainBody">
-      <div class="toolbar">
-        <h3 class="sectionTitle" id="avisos">Avisos</h3>
-        <div class="status" id="dashStatus"></div>
+      <div class="panelBody">
+        <div class="pill" style="margin-bottom:12px">
+          <div class="dot"></div>
+          <div style="font-size:13px;color:rgba(234,240,255,.82);line-height:1.35">
+            Entrá a un curso desde la lista. Los avisos del dashboard son generales.
+          </div>
+        </div>
+
+        <div id="courseList"></div>
+        <div id="empty" class="empty">No tenés cursos asignados.</div>
       </div>
-      <div class="gridCards" id="dashPosts"></div>
-    </div>
-  </main>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="shell main">
+      <div class="mainTop">
+        <div>
+          <h2>Inicio</h2>
+          <div class="mini">Dashboard</div>
+        </div>
+        <div class="row">
+          <button class="btn ghost" id="goAvisos">Avisos</button>
+          <button class="btn" id="newDash" style="display:none">+ Aviso</button>
+        </div>
+      </div>
+
+      <div class="mainBody">
+        <div class="toolbar">
+          <div>
+            <h3 class="sectionTitle" id="avisos">Avisos</h3>
+            <div class="mini" style="margin-top:8px">Novedades generales, anuncios e información importante.</div>
+          </div>
+          <div class="status" id="dashStatus"></div>
+        </div>
+
+        <div class="gridCards" id="dashPosts"></div>
+      </div>
+    </main>
+  </div>
 
   <!-- ver -->
   <div class="modal" id="viewM">
@@ -359,7 +555,7 @@
   const $ = (id)=>document.getElementById(id);
   const canEdit = ()=> role==="maestro" || role==="administrador";
 
-  $("name").textContent = name;
+  $("name").textContent = name || "—";
   $("role").textContent = "Rol: " + role;
   $("sub").textContent = email;
 
@@ -369,6 +565,7 @@
     localStorage.removeItem("session_name");
     location.href="index.html";
   };
+
   $("goAvisos").onclick = ()=> $("avisos").scrollIntoView({behavior:"smooth"});
   $("newDash").style.display = canEdit() ? "inline-block" : "none";
 
@@ -379,6 +576,7 @@
     const d = await r.json();
     return d.courses || [];
   }
+
   function capSvg(){
     return `
     <svg class="cap" viewBox="0 0 24 24" fill="none">
@@ -386,16 +584,20 @@
       <path d="M5 10v5c0 2 3 4 7 4s7-2 7-4v-5" stroke="currentColor" stroke-width="1.6" opacity=".75"/>
     </svg>`;
   }
+
   function esc(s){
     return String(s??"")
       .replaceAll("&","&amp;")
       .replaceAll("<","&lt;")
       .replaceAll(">","&gt;");
   }
+
   function renderCourses(list){
-    const wrap = $("courseList"); wrap.innerHTML="";
+    const wrap = $("courseList");
+    wrap.innerHTML="";
     if(!list.length){ $("empty").style.display="block"; return; }
     $("empty").style.display="none";
+
     list.forEach(c=>{
       const a=document.createElement("a");
       a.className="courseLink";
@@ -404,15 +606,22 @@
       wrap.appendChild(a);
     });
   }
+
   (async()=>{
-    const courses=await loadCourses();
-    const visible = (role==="maestro"||role==="administrador")
-      ? courses
-      : courses.filter(c=>(c.allowedEmails||[]).map(x=>String(x).toLowerCase()).includes(email));
-    renderCourses(visible);
+    try{
+      const courses=await loadCourses();
+      const visible = (role==="maestro"||role==="administrador")
+        ? courses
+        : courses.filter(c=>(c.allowedEmails||[]).map(x=>String(x).toLowerCase()).includes(email));
+      renderCourses(visible);
+    }catch(err){
+      console.error(err);
+      $("empty").style.display="block";
+      $("empty").textContent = "No se pudo cargar courses.json";
+    }
   })();
 
-  // ======= firebase (solo Firestore) =======
+  // ======= firebase (Firestore) =======
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import {
     getFirestore, collection, addDoc, query, orderBy, onSnapshot,
@@ -431,7 +640,7 @@
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
 
-  // ======= dashboard avisos (Firestore) =======
+  // ======= dashboard avisos =======
   const postsRef = collection(db,"dashboard_posts");
   const q = query(postsRef, orderBy("createdAt","desc"));
 
@@ -460,15 +669,18 @@
   function renderDash(){
     const wrap = $("dashPosts");
     wrap.innerHTML = "";
+
     dashPosts.forEach(p=>{
       const div = document.createElement("div");
-      div.className = "card";
+      div.className = "cardPost";
+
       const textHtml = formatCardText(p);
       const actionsHtml = canEdit() ? `
         <div class="cardActions">
           <button class="chipBtn" data-act="edit">Editar</button>
           <button class="chipBtn danger" data-act="del">Eliminar</button>
         </div>` : "";
+
       div.innerHTML = `
         <div class="cardHead">
           ${textHtml || `<div class="cardText"><b> </b></div>`}
@@ -476,14 +688,17 @@
         </div>
         ${p.imageUrl ? `<img class="postImg" src="${esc(p.imageUrl)}" alt="">` : ""}
       `;
+
       div.addEventListener("click",(e)=>{
         const act = e.target?.dataset?.act;
         if(act === "edit"){ e.stopPropagation(); openEdit(p); return; }
         if(act === "del"){  e.stopPropagation(); askDelete(p); return; }
         openView(p);
       });
+
       wrap.appendChild(div);
     });
+
     if(!dashPosts.length) setDashStatus("Avisos y novedades generales");
     else setDashStatus("");
   }
@@ -596,7 +811,6 @@
       }
 
       setSaveStatus("Verificando imagen...", "");
-      // mini-check: intenta cargar la imagen (no siempre es perfecto, pero ayuda)
       await new Promise((res, rej)=>{
         const img = new Image();
         img.onload = ()=>res(true);
