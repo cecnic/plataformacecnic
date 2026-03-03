@@ -1,4 +1,4 @@
-<!-- dashboard.html (reconstruido con el MISMO estilo glass del login: pills, chips, colores, noise) -->
+<!-- dashboard.html (glass + pills + Firestore) -->
 <!doctype html>
 <html lang="es">
 <head>
@@ -150,19 +150,6 @@
       box-shadow: 0 0 0 4px rgba(70,255,170,.15);
       margin-top:3px;
       flex:0 0 auto;
-    }
-
-    .chip{
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(234,240,255,.85);
-      font-weight: 800;
-      letter-spacing:.2px;
-      font-size:12px;
-      user-select:none;
-      white-space:nowrap;
     }
 
     .btn{
@@ -628,11 +615,12 @@
     serverTimestamp, doc, updateDoc, deleteDoc
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+  // ✅ TU CONFIG (const) - con storageBucket .firebasestorage.app
   const firebaseConfig = {
     apiKey: "AIzaSyCygD9ISTn-mqAt5WacS1aIAVb1TunoG00",
     authDomain: "plataformacecnic.firebaseapp.com",
     projectId: "plataformacecnic",
-    storageBucket: "plataformacecnic.appspot.com",
+    storageBucket: "plataformacecnic.firebasestorage.app",
     messagingSenderId: "1053875195363",
     appId: "1:1053875195363:web:57be5f3ff586466ea7a4d6"
   };
