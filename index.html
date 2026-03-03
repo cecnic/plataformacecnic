@@ -1,130 +1,379 @@
-<!-- index.html -->
+<!-- index.html (UI igual al diseño + contador REAL de usuarios desde apartado.json) -->
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <title>Login</title>
+  <title>Plataforma Estudiantil · Login</title>
   <meta name="color-scheme" content="dark light">
   <style>
     :root{
-      --bg1:#070b16; --bg2:#0b1633;
-      --glass:rgba(255,255,255,.10);
-      --glass2:rgba(255,255,255,.14);
-      --stroke:rgba(255,255,255,.16);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.70);
-      --shadow:0 25px 70px rgba(0,0,0,.45);
-      --radius:22px;
-      --ring:0 0 0 3px rgba(255,255,255,.10);
-      --ok:rgba(60,255,160,.85);
-      --bad:rgba(255,90,110,.9);
+      --bg1:#0b1220;
+      --bg2:#0a0f1a;
+
+      --glass: rgba(255,255,255,.08);
+      --glass2: rgba(255,255,255,.12);
+      --stroke: rgba(255,255,255,.18);
+
+      --text:#eaf0ff;
+      --muted: rgba(234,240,255,.72);
+
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 26px;
+
+      --focus: rgba(120,160,255,.35);
+      --good: rgba(70,255,170,.95);
+      --bad: rgba(255,80,120,.95);
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
+
     body{
       margin:0;
-      font-family:system-ui,Segoe UI,Roboto,Arial;
       color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue";
       background:
-        radial-gradient(1200px 700px at 20% 15%, rgba(120,140,255,.35), transparent 55%),
-        radial-gradient(1100px 650px at 85% 25%, rgba(255,110,190,.22), transparent 60%),
-        radial-gradient(900px 600px at 50% 95%, rgba(90,255,210,.16), transparent 55%),
-        linear-gradient(160deg,var(--bg1),var(--bg2));
+        radial-gradient(1200px 800px at 25% 20%, rgba(80,140,255,.22), transparent 55%),
+        radial-gradient(900px 700px at 75% 30%, rgba(255,110,180,.18), transparent 55%),
+        radial-gradient(900px 700px at 60% 80%, rgba(70,255,170,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    .noise{
+      position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay;
+      opacity:.22;
+      pointer-events:none;
+    }
+
+    .wrap{
+      position:relative;
+      height:100%;
       display:grid;
       place-items:center;
-      padding:24px;
-    }
-    .card{
-      width:min(560px,100%);
-      border-radius:var(--radius);
-      background:linear-gradient(180deg,var(--glass2),var(--glass));
-      border:1px solid var(--stroke);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(16px);
       padding:22px;
     }
-    h1{margin:0;font-size:18px;font-weight:900}
-    p{margin:8px 0 18px;color:var(--muted);font-size:13px}
-    .label{font-size:12px;color:rgba(255,255,255,.75);margin:10px 0 7px}
+
+    .card{
+      width:min(1180px, 100%);
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:18px;
+      padding:18px;
+      border-radius: var(--radius2);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow:hidden;
+    }
+
+    @media (max-width: 900px){
+      .card{ grid-template-columns:1fr }
+    }
+
+    .left{
+      position:relative;
+      border-radius: var(--radius);
+      padding:22px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(700px 400px at 20% 15%, rgba(120,160,255,.22), transparent 60%),
+        radial-gradient(700px 400px at 80% 20%, rgba(255,110,180,.16), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      overflow:hidden;
+      min-height: 380px;
+    }
+
+    .brand{ display:flex; align-items:center; gap:12px; }
+
+    .logo{
+      width:44px; height:44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(120,160,255,.9), rgba(255,110,180,.75));
+      box-shadow: 0 16px 50px rgba(120,160,255,.18);
+      position:relative;
+      flex:0 0 auto;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:2px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.35);
+      opacity:.55;
+    }
+
+    .title{
+      margin:0;
+      font-size: 18px;
+      font-weight: 750;
+      letter-spacing:.2px;
+      line-height: 1.15;
+    }
+
+    .subtitle{
+      margin:6px 0 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.35;
+      max-width: 52ch;
+    }
+
+    .bullets{
+      margin-top: 18px;
+      display:grid;
+      gap:10px;
+      font-size: 13px;
+      color: rgba(234,240,255,.82);
+    }
+
+    .pill{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .dot{
+      width:10px; height:10px; border-radius: 99px;
+      background: rgba(70,255,170,.95);
+      box-shadow: 0 0 0 4px rgba(70,255,170,.15);
+      margin-top: 3px;
+      flex:0 0 auto;
+    }
+
+    .right{
+      border-radius: var(--radius);
+      padding:22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    }
+
+    .formTitle{
+      margin:0 0 8px 0;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing:.2px;
+    }
+
+    .formHint{
+      margin:0 0 16px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .field{
+      display:grid;
+      gap:8px;
+      margin: 12px 0;
+    }
+
+    label{
+      font-size: 12px;
+      color: rgba(234,240,255,.78);
+      letter-spacing:.3px;
+    }
+
     .input{
       width:100%;
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
       outline:none;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.18);
+      transition: .18s ease;
     }
-    .input:focus{box-shadow:var(--ring)}
+    .input:focus{
+      border-color: rgba(120,160,255,.55);
+      box-shadow: 0 0 0 4px var(--focus), inset 0 0 0 1px rgba(0,0,0,.18);
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      margin-top: 14px;
+      flex-wrap:wrap;
+    }
+
     .btn{
-      margin-top:14px;
-      width:100%;
-      border:none;
-      padding:12px 14px;
-      border-radius:14px;
       cursor:pointer;
-      font-weight:900;
-      color:#0b0f1a;
-      background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.70));
+      border:0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      letter-spacing:.2px;
+      color:#08101f;
+      background: linear-gradient(135deg, rgba(120,160,255,.96), rgba(255,110,180,.86));
+      box-shadow: 0 18px 50px rgba(120,160,255,.18);
+      transition: transform .12s ease, filter .12s ease;
+      min-width: 160px;
     }
-    .msg{margin-top:12px;font-size:12px;min-height:16px;color:var(--muted)}
-    .msg.ok{color:var(--ok)} .msg.bad{color:var(--bad)}
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+    .btn:active{ transform: translateY(0px); filter: brightness(.98); }
+
+    .mini{
+      font-size: 12px;
+      color: rgba(234,240,255,.7);
+      display:flex; gap:10px; align-items:center;
+    }
+
+    .chip{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(234,240,255,.85);
+      font-weight: 700;
+      letter-spacing:.2px;
+      user-select:none;
+    }
+
+    .msg{
+      margin-top: 12px;
+      font-size: 13px;
+      min-height: 18px;
+      color: rgba(234,240,255,.84);
+    }
+    .msg.good{ color: var(--good); }
+    .msg.bad{ color: var(--bad); }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Plataforma Estudiantil</h1>
-    <p>Ingresá con tu correo y contraseña.</p>
+  <div class="noise"></div>
 
-    <div class="label">Correo</div>
-    <input id="email" class="input" placeholder="ej: alumno1@cecnic.com" autocomplete="username">
+  <div class="wrap">
+    <div class="card">
+      <!-- IZQUIERDA -->
+      <section class="left">
+        <div class="brand">
+          <div class="logo"></div>
+          <div>
+            <p class="title">Plataforma Estudiantil</p>
+            <p class="subtitle">Acceso a cursos, avisos, documentos y recursos.</p>
+          </div>
+        </div>
 
-    <div class="label">Contraseña</div>
-    <input id="pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password">
+        <div class="bullets">
+          <div class="pill"><div class="dot"></div><div>Bienvenidos a la plataforma educativa de nuestro centro.</div></div>
+          <div class="pill"><div class="dot"></div><div>Centro de Estudios Computarizados Nicaragüense.</div></div>
+          <div class="pill"><div class="dot"></div><div>Hecho de ❤️ por JStudios</div></div>
+        </div>
+      </section>
 
-    <button id="loginBtn" class="btn">Entrar</button>
-    <div id="msg" class="msg"></div>
+      <!-- DERECHA -->
+      <section class="right">
+        <h1 class="formTitle">Iniciar sesión</h1>
+        <p class="formHint">Usa tu correo y contraseña.</p>
+
+        <div class="field">
+          <label for="email">CORREO</label>
+          <input id="email" class="input" placeholder="alumno@tucolegio.com" autocomplete="username">
+        </div>
+
+        <div class="field">
+          <label for="pass">CONTRASEÑA</label>
+          <input id="pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+
+        <div class="row">
+          <button id="loginBtn" class="btn" type="button">Entrar</button>
+
+          <div class="mini">
+            <span class="chip" id="statusChip">Cargando...</span>
+            <span id="usersInfo"></span>
+          </div>
+        </div>
+
+        <div id="msg" class="msg"></div>
+      </section>
+    </div>
   </div>
 
   <script>
+    // ========= TU LÓGICA ORIGINAL (apartado.json) + CONTADOR REAL =========
     const $ = (id)=>document.getElementById(id);
+
+    // Si ya hay sesión, manda al dashboard
     if(localStorage.getItem("session_email")) location.href="dashboard.html";
 
-    function setMsg(t,type=""){ $("msg").textContent=t||""; $("msg").className="msg "+type; }
+    function setMsg(t,type=""){
+      $("msg").textContent = t || "";
+      $("msg").className = "msg" + (type ? " " + type : "");
+    }
 
     async function loadUsers(){
-      const r = await fetch("apartado.json",{cache:"no-store"});
+      const r = await fetch("apartado.json",{ cache:"no-store" });
       if(!r.ok) throw new Error("apartado.json");
       const d = await r.json();
       return d.users || [];
     }
 
+    // Muestra Online/Offline y "Usuarios cargados: N"
+    async function boot(){
+      try{
+        const users = await loadUsers();
+        $("statusChip").textContent = "Online";
+        $("usersInfo").textContent = `Usuarios cargados: ${users.length}`;
+      }catch{
+        $("statusChip").textContent = "Offline";
+        $("usersInfo").textContent = "";
+      }
+    }
+
     async function login(){
       const email = $("email").value.trim().toLowerCase();
-      const pass = $("pass").value;
+      const pass  = $("pass").value;
 
       if(!email || !pass){ setMsg("Faltan datos.","bad"); return; }
 
       setMsg("Verificando...");
-      let users=[];
-      try{ users = await loadUsers(); }catch{ setMsg("No se pudo leer apartado.json","bad"); return; }
+      $("statusChip").textContent = "Cargando...";
 
-      const u = users.find(x => String(x.email).toLowerCase()===email && String(x.pass)===String(pass));
+      let users=[];
+      try{
+        users = await loadUsers();
+        $("statusChip").textContent = "Online";
+        $("usersInfo").textContent = `Usuarios cargados: ${users.length}`;
+      }catch{
+        setMsg("No se pudo leer apartado.json (usa Live Server).","bad");
+        $("statusChip").textContent = "Offline";
+        $("usersInfo").textContent = "";
+        return;
+      }
+
+      // IMPORTANTE: tu JSON usa "pass" (como en tu primer código)
+      const u = users.find(x =>
+        String(x.email || "").toLowerCase() === email &&
+        String(x.pass  || "") === String(pass)
+      );
+
       if(!u){ setMsg("Credenciales incorrectas.","bad"); return; }
 
       localStorage.setItem("session_email", email);
       localStorage.setItem("session_role", u.role || "estudiante");
       localStorage.setItem("session_name", u.name || email);
 
-      setMsg("Entrando...","ok");
-      setTimeout(()=>location.href="dashboard.html",250);
+      setMsg("Entrando...","good");
+      setTimeout(()=>location.href="dashboard.html", 250);
     }
 
     $("loginBtn").onclick = login;
     $("pass").addEventListener("keydown",(e)=>{ if(e.key==="Enter") login(); });
     $("email").addEventListener("keydown",(e)=>{ if(e.key==="Enter") login(); });
+
+    boot();
   </script>
 </body>
 </html>
