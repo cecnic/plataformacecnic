@@ -1,457 +1,655 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plataforma educativa Cenic</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>Plataforma Estudiantil · Login</title>
+  <meta name="color-scheme" content="light">
   <style>
     :root{
       --azul:#1d4ed8;
       --azul-oscuro:#0b1f4d;
+      --azul-medio:#2563eb;
       --azul-suave:#dbeafe;
+      --azul-claro:#eff6ff;
       --blanco:#ffffff;
-      --borde:#bfdbfe;
       --texto:#0f172a;
-      --success:#16a34a;
-      --danger:#dc2626;
-      --shadow:0 20px 60px rgba(11,31,77,.18);
+      --muted:#5b6b85;
+      --borde:#bfdbfe;
+      --shadow:0 24px 70px rgba(11,31,77,.16);
+      --shadow-soft:0 12px 30px rgba(29,78,216,.10);
+      --ok:#16a34a;
+      --bad:#dc2626;
+      --focus:rgba(37,99,235,.18);
+      --radius:28px;
+      --radius2:22px;
     }
 
     *{box-sizing:border-box}
+    html,body{height:100%}
 
     body{
-      background:
-        radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 25%),
-        radial-gradient(circle at top right, rgba(29,78,216,.18), transparent 28%),
-        linear-gradient(145deg, #eff6ff 0%, #dbeafe 45%, #eef4ff 100%);
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--texto);
-      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,.16), transparent 25%),
+        radial-gradient(circle at top right, rgba(29,78,216,.14), transparent 28%),
+        linear-gradient(145deg, #eff6ff 0%, #dbeafe 45%, #eef4ff 100%);
+      overflow:hidden;
     }
 
-    .glass{
-      background: rgba(255,255,255,.78);
-      backdrop-filter: blur(12px);
-      border:1px solid rgba(255,255,255,.6);
-      box-shadow: var(--shadow);
+    .bg-dots{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.22;
+      background-image: radial-gradient(circle, rgba(29,78,216,.35) 1.1px, transparent 1.1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), rgba(0,0,0,.35));
     }
 
-    .panel-title{
+    .wrap{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding:18px;
+      position:relative;
+      z-index:1;
+    }
+
+    .shell{
+      width:min(1280px,100%);
+      background:rgba(255,255,255,.62);
+      border:1px solid rgba(255,255,255,.72);
+      backdrop-filter: blur(10px);
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      animation: riseIn .7s ease;
+    }
+
+    .hero{
+      position:relative;
+      padding:28px;
+      min-height:360px;
+      background:
+        linear-gradient(135deg, #0b1f4d 0%, #163b8e 55%, #1d4ed8 100%);
+      color:#fff;
+      overflow:hidden;
+    }
+
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.22;
+      background-image: radial-gradient(circle, rgba(255,255,255,.45) 1.2px, transparent 1.2px);
+      background-size: 32px 32px;
+    }
+
+    .hero-glow-1,
+    .hero-glow-2{
+      position:absolute;
+      border-radius:999px;
+      filter: blur(30px);
+      opacity:.18;
+      pointer-events:none;
+    }
+
+    .hero-glow-1{
+      width:320px;height:320px;
+      background:#60a5fa;
+      top:-80px;left:-60px;
+      animation: floaty 8s ease-in-out infinite;
+    }
+
+    .hero-glow-2{
+      width:280px;height:280px;
+      background:#93c5fd;
+      right:-80px;bottom:-80px;
+      animation: floaty 10s ease-in-out infinite reverse;
+    }
+
+    .hero-grid{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns: 1.2fr .72fr;
+      gap:28px;
+      align-items:center;
+    }
+
+    @media (max-width: 980px){
+      .hero-grid{grid-template-columns:1fr}
+      .hero{min-height:auto}
+    }
+
+    .hero-left{
+      padding:6px 6px 6px 14px;
+      animation: slideLeft .7s ease;
+    }
+
+    .mini-brand{
+      letter-spacing:.5em;
+      font-size:12px;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.9);
+      margin:0 0 10px 0;
+    }
+
+    .hero-title{
+      margin:0;
+      font-size: clamp(44px, 7vw, 70px);
+      line-height:.94;
+      font-weight:900;
+      letter-spacing:-.04em;
+      text-shadow: 0 8px 30px rgba(0,0,0,.14);
+    }
+
+    .hero-sub{
+      margin:18px 0 0 0;
+      font-size:16px;
+      color:rgba(255,255,255,.92);
+      max-width:650px;
+    }
+
+    .hero-right{
+      border:1px solid rgba(255,255,255,.18);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.06));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+      border-radius:34px;
+      padding:24px;
+      animation: slideRight .8s ease;
+    }
+
+    .hero-label{
+      color:rgba(255,255,255,.92);
+      font-size:14px;
+      margin-bottom:12px;
+    }
+
+    .hero-course{
+      width:100%;
+      border:0;
+      border-radius:22px;
+      padding:16px 18px;
+      font-size:18px;
+      background:#fff;
+      color:var(--texto);
+      outline:none;
+      box-shadow: 0 10px 25px rgba(0,0,0,.10);
+    }
+
+    .hero-info{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .hero-box{
+      border-radius:22px;
+      padding:16px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    .hero-box small{
+      display:block;
+      color:rgba(255,255,255,.86);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .hero-box strong{
+      display:block;
+      color:#fff;
+      font-size:18px;
+      line-height:1.2;
+    }
+
+    .content{
+      padding:24px;
+      display:grid;
+      grid-template-columns: 1fr 430px;
+      gap:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.08));
+    }
+
+    @media (max-width: 980px){
+      .content{grid-template-columns:1fr}
+    }
+
+    .panel{
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(255,255,255,.72);
+      border-radius:30px;
+      padding:24px;
+      box-shadow:var(--shadow-soft);
+      backdrop-filter: blur(10px);
+      animation: fadeUp .8s ease;
+    }
+
+    .panel h2{
+      margin:0;
+      font-size:32px;
+      font-weight:900;
+      letter-spacing:-.03em;
       background: linear-gradient(90deg, var(--azul-oscuro), var(--azul));
       -webkit-background-clip:text;
       background-clip:text;
-      color: transparent;
+      color:transparent;
     }
 
-    .emoji-card.active{
-      border-color: var(--azul);
-      transform: translateY(-3px);
-      box-shadow: 0 16px 40px rgba(29,78,216,.18);
+    .panel p{
+      margin:10px 0 0 0;
+      color:var(--muted);
+      line-height:1.6;
     }
 
-    .student-row.selected{
-      border-color: #60a5fa;
-      background: linear-gradient(90deg, rgba(219,234,254,.95), rgba(255,255,255,.95));
+    .feature-grid{
+      margin-top:20px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
     }
 
-    .student-row.present{
-      box-shadow: inset 4px 0 0 var(--success);
+    @media (max-width: 680px){
+      .feature-grid{grid-template-columns:1fr}
     }
 
-    .student-row.absent{
-      box-shadow: inset 4px 0 0 var(--danger);
+    .feature{
+      border-radius:24px;
+      padding:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(239,246,255,.95));
+      border:1px solid var(--borde);
+      box-shadow:0 8px 24px rgba(37,99,235,.08);
+      transition:transform .18s ease, box-shadow .18s ease;
     }
 
-    .badge-wof{
-      background: linear-gradient(135deg, #1d4ed8, #0b1f4d);
-      color: white;
-      border:1px solid rgba(255,255,255,.2);
+    .feature:hover{
+      transform:translateY(-3px);
+      box-shadow:0 16px 36px rgba(37,99,235,.12);
     }
 
-    .mini-scroll::-webkit-scrollbar{width:10px;height:10px}
-    .mini-scroll::-webkit-scrollbar-thumb{background:#93c5fd;border-radius:999px}
-    .mini-scroll::-webkit-scrollbar-track{background:#eff6ff}
+    .feature .icon{
+      width:50px;height:50px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, #1d4ed8, #0b1f4d);
+      color:#fff;
+      font-size:22px;
+      box-shadow:0 14px 28px rgba(29,78,216,.18);
+      margin-bottom:12px;
+    }
 
-    .capture-card{
+    .feature strong{
+      display:block;
+      font-size:16px;
+      margin-bottom:6px;
+      color:#102042;
+    }
+
+    .feature span{
+      color:#5d6e8e;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .login-card{
       background:
-        linear-gradient(155deg, rgba(255,255,255,.98), rgba(239,246,255,.98)),
-        linear-gradient(135deg, rgba(29,78,216,.06), rgba(11,31,77,.08));
-      border: 2px solid #bfdbfe;
-      box-shadow: 0 20px 60px rgba(29,78,216,.10);
+        linear-gradient(155deg, rgba(255,255,255,.98), rgba(239,246,255,.96)),
+        linear-gradient(135deg, rgba(29,78,216,.04), rgba(11,31,77,.08));
+      border:1px solid var(--borde);
+      border-radius:30px;
+      padding:24px;
+      box-shadow:0 20px 48px rgba(11,31,77,.10);
+      animation: fadeUp .9s ease;
+    }
+
+    .login-title{
+      margin:0;
+      font-size:30px;
+      font-weight:900;
+      letter-spacing:-.03em;
+      color:var(--azul-oscuro);
+    }
+
+    .login-sub{
+      margin:8px 0 18px 0;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .field{
+      display:grid;
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    .field label{
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.16em;
+      color:#36507f;
+    }
+
+    .input{
+      width:100%;
+      padding:15px 16px;
+      border-radius:18px;
+      border:1px solid var(--borde);
+      background:#fff;
+      color:var(--texto);
+      outline:none;
+      font-size:15px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.65);
+      transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+
+    .input:focus{
+      border-color:#60a5fa;
+      box-shadow:0 0 0 5px var(--focus);
+      transform:translateY(-1px);
+    }
+
+    .login-row{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .btn{
+      cursor:pointer;
+      border:0;
+      min-width:160px;
+      padding:14px 18px;
+      border-radius:18px;
+      background:linear-gradient(135deg, #1d4ed8, #0b1f4d);
+      color:#fff;
+      font-weight:900;
+      letter-spacing:.02em;
+      box-shadow:0 18px 38px rgba(29,78,216,.20);
+      transition:transform .15s ease, filter .15s ease, box-shadow .15s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.03);
+      box-shadow:0 22px 44px rgba(29,78,216,.24);
+    }
+
+    .btn:active{transform:translateY(0)}
+
+    .mini{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      color:#47628e;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .chip{
+      padding:7px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--borde);
+      color:#264578;
+      font-weight:900;
+      box-shadow:0 6px 16px rgba(37,99,235,.08);
+    }
+
+    .msg{
+      margin-top:14px;
+      min-height:20px;
+      font-size:14px;
+      font-weight:700;
+      color:#35517f;
+    }
+
+    .msg.good{color:var(--ok)}
+    .msg.bad{color:var(--bad)}
+
+    .floating-card{
+      margin-top:18px;
+      padding:16px;
+      border-radius:22px;
+      background:linear-gradient(180deg, #ffffff, #f6faff);
+      border:1px solid var(--borde);
+      box-shadow:0 12px 26px rgba(37,99,235,.08);
+      animation: floaty 7s ease-in-out infinite;
+    }
+
+    .floating-card strong{
+      display:block;
+      color:#163b8e;
+      margin-bottom:6px;
+    }
+
+    .floating-card span{
+      color:#5c6d8c;
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    @keyframes riseIn{
+      from{opacity:0; transform:translateY(16px) scale(.985)}
+      to{opacity:1; transform:translateY(0) scale(1)}
+    }
+
+    @keyframes slideLeft{
+      from{opacity:0; transform:translateX(-18px)}
+      to{opacity:1; transform:translateX(0)}
+    }
+
+    @keyframes slideRight{
+      from{opacity:0; transform:translateX(18px)}
+      to{opacity:1; transform:translateX(0)}
+    }
+
+    @keyframes fadeUp{
+      from{opacity:0; transform:translateY(18px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    @keyframes floaty{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-8px)}
     }
   </style>
 </head>
-<body class="min-h-screen p-4 md:p-8">
-  <div class="max-w-7xl mx-auto">
-    <div class="glass rounded-[30px] overflow-hidden">
-      <div class="relative px-6 md:px-10 py-8 md:py-10 bg-gradient-to-r from-[#0b1f4d] via-[#163b8e] to-[#1d4ed8] text-white">
-        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 20% 20%, white 1px, transparent 1px); background-size: 26px 26px;"></div>
-        <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div>
-            <p class="uppercase tracking-[0.35em] text-xs md:text-sm text-blue-100">CECNIC</p>
-            <h1 class="text-3xl md:text-5xl font-black mt-2">WOF CECNIC</h1>
-            <p class="mt-3 text-blue-100 max-w-2xl text-sm md:text-base">
-              Registro visual de participaciones del curso.
-            </p>
+<body>
+  <div class="bg-dots"></div>
+
+  <div class="wrap">
+    <div class="shell">
+      <section class="hero">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+
+        <div class="hero-grid">
+          <div class="hero-left">
+            <p class="mini-brand">CECNIC</p>
+            <h1 class="hero-title">PLATAFORMA<br>ESTUDIANTIL</h1>
+            <p class="hero-sub">Acceso a cursos, avisos, documentos y recursos del centro.</p>
           </div>
-          <div class="bg-white/12 border border-white/20 rounded-3xl p-5 min-w-[290px]">
-            <div class="text-sm text-blue-100">Curso actual</div>
-            <input id="courseName" value="Curso Inglés Kids" class="mt-2 w-full rounded-2xl bg-white text-slate-900 px-4 py-3 font-semibold outline-none" />
-            <div class="grid grid-cols-2 gap-3 mt-3">
-              <div class="rounded-2xl bg-white/10 border border-white/15 p-3">
-                <div class="text-xs text-blue-100">Fecha</div>
-                <div id="currentDate" class="font-bold mt-1"></div>
+
+          <div class="hero-right">
+            <div class="hero-label">Curso actual</div>
+            <input id="courseName" class="hero-course" value="Curso Inglés Kids">
+
+            <div class="hero-info">
+              <div class="hero-box">
+                <small>Fecha</small>
+                <strong id="currentDate"></strong>
               </div>
-              <div class="rounded-2xl bg-white/10 border border-white/15 p-3">
-                <div class="text-xs text-blue-100">Seleccionados</div>
-                <div id="selectedCountTop" class="font-bold mt-1">0 alumnos</div>
+              <div class="hero-box">
+                <small>Usuarios</small>
+                <strong id="usersCountHero">0 cargados</strong>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="grid xl:grid-cols-[1.35fr_.95fr] gap-6 p-4 md:p-6">
-        <section class="glass rounded-[28px] p-4 md:p-6 border border-white/60">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
-            <div>
-              <h2 class="text-2xl font-black panel-title">Lista de estudiantes</h2>
-              <p class="text-slate-600 text-sm">Estudiantes del curso</p>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <input id="newStudentName" placeholder="Nombre del estudiante" class="px-3 py-2 rounded-xl border border-blue-200" />
-              <button onclick="addStudent()" class="px-4 py-2 rounded-2xl bg-blue-700 text-white font-semibold">Agregar</button>
-              <button onclick="selectAll(true)" class="px-4 py-2 rounded-2xl bg-blue-600 text-white font-semibold hover:scale-[1.02] transition">Seleccionar todos</button>
-              <button onclick="selectAll(false)" class="px-4 py-2 rounded-2xl bg-slate-200 text-slate-800 font-semibold hover:scale-[1.02] transition">Limpiar</button>
-            </div>
-          </div>
+      <section class="content">
+        <div class="panel">
+          <h2>Bienvenidos</h2>
+          <p>Espacio académico para el acceso ordenado a materiales, avisos y herramientas del curso.</p>
 
-          <div class="rounded-[26px] border border-blue-100 bg-white/80 p-3 md:p-4 max-h-[760px] overflow-auto mini-scroll">
-            <div id="studentList" class="space-y-3"></div>
-          </div>
-        </section>
-
-        <aside class="space-y-6">
-          <section class="glass rounded-[28px] p-4 md:p-6">
-            <div class="flex items-center justify-between gap-3">
-              <div>
-                <h2 class="text-2xl font-black panel-title">Emojis / Participaciones</h2>
-                <p class="text-slate-600 text-sm">Seleccionar participación</p>
-              </div>
-              <div class="badge-wof rounded-2xl px-4 py-2 text-sm font-bold">Activos: <span id="selectedCountSide">0</span></div>
+          <div class="feature-grid">
+            <div class="feature">
+              <div class="icon">📘</div>
+              <strong>Cursos</strong>
+              <span>Materiales y recursos disponibles para cada asignatura.</span>
             </div>
 
-            
-
-            <div id="emojiGrid" class="grid grid-cols-2 gap-3 mt-5"></div>
-
-            <div class="grid gap-3 mt-5">
-              <button onclick="assignSelectedEmoji()" class="w-full rounded-2xl px-4 py-3 bg-gradient-to-r from-[#1d4ed8] to-[#0b1f4d] text-white font-extrabold shadow-lg hover:scale-[1.01] transition">Asignar emoji al alumno seleccionado</button>
-              <button onclick="clearEmojisSelected()" class="w-full rounded-2xl px-4 py-3 bg-slate-100 text-slate-800 font-bold border border-slate-200 hover:scale-[1.01] transition">Quitar emoji a seleccionados</button>
+            <div class="feature">
+              <div class="icon">📢</div>
+              <strong>Avisos</strong>
+              <span>Información importante y comunicados del centro.</span>
             </div>
-          </section>
 
-          <section class="glass rounded-[28px] p-4 md:p-6">
-            <h2 class="text-2xl font-black panel-title">Mensaje automático</h2>
-            <p class="text-slate-600 text-sm mb-4">Mensaje del curso</p>
-            <textarea id="messageBox" rows="8" class="w-full rounded-[24px] border border-blue-200 bg-white px-4 py-4 outline-none resize-none">Excelente trabajo. Esta es la participación destacada del día en CECNIC. ¡Sigamos aprendiendo con entusiasmo, disciplina y alegría!</textarea>
-            <div class="grid grid-cols-2 gap-3 mt-4">
-              <button onclick="generateMessage()" class="rounded-2xl px-4 py-3 bg-blue-100 text-blue-900 font-bold">Actualizar mensaje</button>
-              <button onclick="copyMessage()" class="rounded-2xl px-4 py-3 bg-slate-900 text-white font-bold">Copiar texto</button>
-            </div>
-          </section>
-        </aside>
-      </div>
-
-      <div class="p-4 md:p-6 pt-0">
-        <section class="glass rounded-[28px] p-4 md:p-6">
-          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-5">
-            <div>
-              <h2 class="text-2xl font-black panel-title">Vista previa WOF</h2>
-              <p class="text-slate-600 text-sm">Vista del registro del curso</p>
-            </div>
-            <div class="flex flex-wrap gap-3">
-              <button onclick="renderWof()" class="rounded-2xl px-5 py-3 bg-gradient-to-r from-[#1d4ed8] to-[#0b1f4d] text-white font-extrabold shadow-lg">Generar WOF</button>
-              <button onclick="downloadWofImage()" class="rounded-2xl px-5 py-3 bg-white border border-blue-200 text-blue-900 font-bold">Descargar foto</button>
+            <div class="feature">
+              <div class="icon">🧾</div>
+              <strong>Documentos</strong>
+              <span>Acceso organizado a contenidos y archivos del curso.</span>
             </div>
           </div>
 
-          <div id="copyCard" class="hidden mb-4 rounded-[24px] border border-blue-200 bg-blue-50 p-4 text-slate-700"></div>
+          <div class="floating-card">
+            <strong>Centro de Estudios Computarizados Nicaragüense</strong>
+            <span>Ingreso seguro a la plataforma educativa del centro.</span>
+          </div>
+        </div>
 
-          <div id="wofCapture" class="capture-card rounded-[32px] p-5 md:p-8 overflow-hidden">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-blue-100 pb-6">
-              <div>
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full badge-wof text-sm font-bold">⭐ WOF · Wall of Fame</div>
-                <h3 id="wofTitle" class="text-3xl md:text-4xl font-black text-slate-900 mt-4">Participaciones destacadas CECNIC</h3>
-                <p id="wofSubtitle" class="text-slate-600 mt-2">Registro de participaciones</p>
-              </div>
-              <div class="grid grid-cols-2 gap-3 min-w-[280px]">
-                <div class="rounded-[24px] bg-white border border-blue-100 p-4">
-                  <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Curso</div>
-                  <div id="wofCourse" class="font-black text-lg mt-2 text-blue-900">Curso Inglés Kids</div>
-                </div>
-                <div class="rounded-[24px] bg-white border border-blue-100 p-4">
-                  <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Fecha</div>
-                  <div id="wofDate" class="font-black text-lg mt-2 text-blue-900"></div>
-                </div>
-              </div>
-            </div>
+        <div class="login-card">
+          <h1 class="login-title">Iniciar sesión</h1>
+          <p class="login-sub">Ingrese su correo y contraseña para continuar.</p>
 
-            <div id="wofStudents" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6"></div>
+          <div class="field">
+            <label for="email">CORREO</label>
+            <input id="email" class="input" placeholder="alumno@cecnic.com" autocomplete="username">
+          </div>
 
-            <div class="mt-6 rounded-[28px] bg-gradient-to-r from-[#0b1f4d] to-[#1d4ed8] text-white p-5 md:p-6">
-              <div class="text-xs uppercase tracking-[0.3em] text-blue-100">Mensaje</div>
-              <p id="wofMessage" class="text-base md:text-lg font-medium leading-relaxed mt-3"></p>
+          <div class="field">
+            <label for="pass">CONTRASEÑA</label>
+            <input id="pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password">
+          </div>
+
+          <div class="login-row">
+            <button id="loginBtn" class="btn" type="button">Entrar</button>
+
+            <div class="mini">
+              <span class="chip" id="statusChip">Cargando...</span>
+              <span id="usersInfo"></span>
             </div>
           </div>
-        </section>
-      </div>
+
+          <div id="msg" class="msg"></div>
+        </div>
+      </section>
     </div>
   </div>
 
   <script>
-    const students = []; // estudiantes se agregan desde la página
+    const $ = (id)=>document.getElementById(id);
 
-    const emojiCatalog = [
-      { id: 1, title: 'CECNIC Feliz', file: '1.png' },
-      { id: 2, title: 'Excelente', file: '2.png' },
-      { id: 3, title: 'Participó', file: '3.png' },
-      { id: 4, title: 'Muy bien', file: '4.png' },
-      { id: 5, title: 'Creativo', file: '5.png' },
-      { id: 6, title: 'Ordenado', file: '6.png' }
-    ];
+    if(localStorage.getItem("session_email")) location.href="dashboard.html";
 
-    let selectedEmojiId = 1;
-
-    const studentList = document.getElementById('studentList');
-    const emojiGrid = document.getElementById('emojiGrid');
-    const currentDate = document.getElementById('currentDate');
-    const wofDate = document.getElementById('wofDate');
-    const wofCourse = document.getElementById('wofCourse');
-    const wofStudents = document.getElementById('wofStudents');
-    const wofMessage = document.getElementById('wofMessage');
-    const selectedCountTop = document.getElementById('selectedCountTop');
-    const selectedCountSide = document.getElementById('selectedCountSide');
-
-    function getAssetsPath(){ return 'assets/emojis'; }
-    function emojiPath(file){ return getAssetsPath() + '/' + file; }
-
-    function todayText(){
-      return new Date().toLocaleDateString('es-NI', {
-        year: 'numeric', month: 'long', day: 'numeric'
+    function formatDate(){
+      return new Date().toLocaleDateString("es-NI", {
+        day:"numeric",
+        month:"long",
+        year:"numeric"
       });
     }
 
-    function initials(name){
-      return name.split(' ').map(v => v[0]).slice(0,2).join('');
+    $("currentDate").textContent = formatDate();
+
+    function setMsg(t,type=""){
+      $("msg").textContent = t || "";
+      $("msg").className = "msg" + (type ? " " + type : "");
     }
 
-    function emojiPreviewHtml(emojis, size = 'w-8 h-8'){
-      if(!emojis || !emojis.length){
-        return '<div class="text-[11px] text-slate-400 font-bold text-center px-2">Sin emoji</div>';
+    async function loadUsers(){
+      const r = await fetch("apartado.json",{ cache:"no-store" });
+      if(!r.ok) throw new Error("apartado.json");
+      const d = await r.json();
+      return d.users || [];
+    }
+
+    async function boot(){
+      try{
+        const users = await loadUsers();
+        $("statusChip").textContent = "Online";
+        $("usersInfo").textContent = `Usuarios cargados: ${users.length}`;
+        $("usersCountHero").textContent = `${users.length} cargados`;
+      }catch{
+        $("statusChip").textContent = "Offline";
+        $("usersInfo").textContent = "";
+        $("usersCountHero").textContent = "Sin conexión";
       }
-      return '<div class="flex flex-wrap gap-2">' + emojis.map(function(e){
-        return '<img src="' + emojiPath(e.file) + '" alt="' + e.title + '" class="' + size + ' rounded-xl border border-blue-100 bg-white object-cover shadow-sm">';
-      }).join('') + '</div>';
     }
 
-    function emojiBadgesHtml(emojis){
-      if(!emojis || !emojis.length){
-        return '<span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500">Sin emoji</span>';
+    async function login(){
+      const email = $("email").value.trim().toLowerCase();
+      const pass  = $("pass").value;
+
+      if(!email || !pass){
+        setMsg("Faltan datos.","bad");
+        return;
       }
-      return emojis.map(function(e){
-        return '<span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">#' + e.id + ' ' + e.title + '</span>';
-      }).join(' ');
+
+      setMsg("Verificando...");
+      $("statusChip").textContent = "Cargando...";
+
+      let users = [];
+      try{
+        users = await loadUsers();
+        $("statusChip").textContent = "Online";
+        $("usersInfo").textContent = `Usuarios cargados: ${users.length}`;
+        $("usersCountHero").textContent = `${users.length} cargados`;
+      }catch{
+        setMsg("No se pudo leer apartado.json.","bad");
+        $("statusChip").textContent = "Offline";
+        $("usersInfo").textContent = "";
+        $("usersCountHero").textContent = "Sin conexión";
+        return;
+      }
+
+      const u = users.find(x =>
+        String(x.email || "").toLowerCase() === email &&
+        String(x.pass  || "") === String(pass)
+      );
+
+      if(!u){
+        setMsg("Credenciales incorrectas.","bad");
+        return;
+      }
+
+      localStorage.setItem("session_email", email);
+      localStorage.setItem("session_role", u.role || "estudiante");
+      localStorage.setItem("session_name", u.name || email);
+
+      setMsg("Entrando...","good");
+      setTimeout(()=>location.href="dashboard.html", 250);
     }
 
-    function renderStudents(){
-      studentList.innerHTML = '';
+    $("loginBtn").onclick = login;
+    $("pass").addEventListener("keydown",(e)=>{ if(e.key==="Enter") login(); });
+    $("email").addEventListener("keydown",(e)=>{ if(e.key==="Enter") login(); });
 
-      students.forEach(function(student, index){
-        const row = document.createElement('div');
-        row.className = 'student-row ' + (student.selected ? 'selected ' : '') + 'rounded-[24px] border border-blue-100 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-lg';
-
-        row.innerHTML = `
-          <div class="flex flex-col xl:flex-row xl:items-center gap-4">
-            <div class="flex items-center gap-4 flex-1 min-w-0">
-              <label class="shrink-0 flex items-center justify-center w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 cursor-pointer">
-                <input type="checkbox" ${student.selected ? 'checked' : ''} onchange="toggleStudent(${index})" class="w-4 h-4 accent-blue-600" />
-              </label>
-
-              <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 border border-blue-200 flex items-center justify-center text-blue-900 font-black text-lg shadow-sm shrink-0">
-                ${initials(student.name)}
-              </div>
-
-              <div class="min-w-0 flex-1">
-                <div class="font-black text-lg text-slate-900 truncate">${student.name}</div>
-                <div class="flex flex-wrap items-center gap-2 mt-2">${emojiBadgesHtml(student.emojis)}</div>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-3 xl:justify-end">
-              <div class="min-h-[64px] min-w-[90px] rounded-[20px] border border-blue-100 bg-slate-50 p-2 overflow-hidden flex items-center justify-center">
-                ${emojiPreviewHtml(student.emojis)}
-              </div>
-            </div>
-          </div>
-        `;
-
-        studentList.appendChild(row);
-      });
-
-      updateSelectedCount();
-    }
-
-    function renderEmojiGrid(){
-      emojiGrid.innerHTML = '';
-      emojiCatalog.forEach(function(item){
-        const card = document.createElement('button');
-        card.className = 'emoji-card ' + (selectedEmojiId === item.id ? 'active ' : '') + 'rounded-[24px] border-2 border-blue-100 bg-white p-3 text-left transition hover:-translate-y-1';
-        card.onclick = function(){
-          selectedEmojiId = item.id;
-          renderEmojiGrid();
-        };
-
-        card.innerHTML = `
-          <div class="aspect-square rounded-[20px] overflow-hidden bg-blue-50 border border-blue-100 flex items-center justify-center">
-            <img src="${emojiPath(item.file)}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-            <div style="display:none" class="w-full h-full items-center justify-center text-center text-xs font-bold text-slate-400 p-3">Agrega ${item.file} en assets</div>
-          </div>
-          <div class="mt-3 flex items-center justify-between gap-2">
-            <div>
-              <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Número ${item.id}</div>
-              <div class="font-black text-slate-900 leading-tight">${item.title}</div>
-            </div>
-            <div class="badge-wof w-10 h-10 rounded-2xl flex items-center justify-center font-black">${item.id}</div>
-          </div>
-        `;
-
-        emojiGrid.appendChild(card);
-      });
-    }
-
-    function addStudent(){
-      const input = document.getElementById('newStudentName');
-      const name = input.value.trim();
-      if(!name) return;
-      students.push({ name: name, emojis: [], selected: false });
-      input.value = '';
-      renderStudents();
-    }
-
-    function toggleStudent(index){
-      students[index].selected = !students[index].selected;
-      renderStudents();
-    }
-
-    function selectAll(value){
-      students.forEach(function(s){ s.selected = value; });
-      renderStudents();
-    }
-
-    function assignSelectedEmoji(){
-      const emoji = emojiCatalog.find(function(e){ return e.id === selectedEmojiId; });
-      students.forEach(function(student){
-        if(student.selected){
-          student.emojis.push({ id: emoji.id, title: emoji.title, file: emoji.file });
-        }
-      });
-      renderStudents();
-      renderWof();
-    }
-
-    function clearEmojisSelected(){
-      students.forEach(function(student){
-        if(student.selected) student.emojis = [];
-      });
-      renderStudents();
-      renderWof();
-    }
-
-    function updateSelectedCount(){
-      const total = students.filter(function(s){ return s.selected; }).length;
-      selectedCountTop.textContent = total + ' alumno' + (total === 1 ? '' : 's');
-      selectedCountSide.textContent = total;
-    }
-
-    function generateMessage(){
-      const course = document.getElementById('courseName').value.trim() || 'Curso';
-      const destacados = students.filter(function(s){ return s.emojis.length; }).map(function(s){ return s.name; });
-      const totalParticipaciones = students.reduce(function(n, s){ return n + s.emojis.length; }, 0);
-      const text = 'CECNIC informa las participaciones destacadas de ' + course + '. Participaciones registradas: ' + totalParticipaciones + '. ' + (destacados.length ? 'Estudiantes reconocidos: ' + destacados.join(', ') + '.' : 'Aún no hay reconocimientos asignados.') + ' ¡Felicitamos el esfuerzo, la disciplina y el entusiasmo de nuestros estudiantes!';
-      document.getElementById('messageBox').value = text;
-      renderWof();
-    }
-
-    function copyMessage(){
-      const message = document.getElementById('messageBox');
-      message.select();
-      message.setSelectionRange(0, 99999);
-      document.execCommand('copy');
-      const box = document.getElementById('copyCard');
-      box.classList.remove('hidden');
-      box.innerHTML = '<div class="font-bold text-blue-900">Mensaje copiado</div><div class="text-sm mt-1">Ya puedes pegar el texto donde lo necesites.</div>';
-    }
-
-    function renderWof(){
-      const dateText = todayText();
-      const course = document.getElementById('courseName').value.trim() || 'Curso CECNIC';
-      const message = document.getElementById('messageBox').value.trim();
-
-      currentDate.textContent = dateText;
-      wofDate.textContent = dateText;
-      wofCourse.textContent = course;
-      wofMessage.textContent = message;
-      document.getElementById('wofTitle').textContent = 'Participaciones destacadas · ' + course;
-
-      const visibles = students.filter(function(s){ return s.emojis.length || s.selected; });
-      wofStudents.innerHTML = visibles.map(function(student){
-        return `
-          <div class="rounded-[28px] bg-white border border-blue-100 p-4 shadow-sm hover:-translate-y-1 transition">
-            <div class="flex items-center gap-4">
-              <div class="w-16 h-16 rounded-[22px] bg-gradient-to-br from-blue-100 to-blue-200 border border-blue-200 flex items-center justify-center text-blue-900 font-black text-lg shrink-0">
-                ${initials(student.name)}
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="font-black text-slate-900 text-lg leading-tight">${student.name}</div>
-                <div class="mt-2 flex flex-wrap gap-2">${emojiBadgesHtml(student.emojis)}</div>
-              </div>
-            </div>
-            <div class="mt-4 rounded-[24px] bg-blue-50 border border-blue-100 min-h-[110px] p-3 flex items-center overflow-hidden">
-              ${emojiPreviewHtml(student.emojis, 'w-12 h-12')}
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      const totalParticipaciones = students.reduce(function(n, s){ return n + s.emojis.length; }, 0);
-      const reconocidos = students.filter(function(s){ return s.emojis.length; }).length;
-      const copyCard = document.getElementById('copyCard');
-      copyCard.classList.remove('hidden');
-      copyCard.innerHTML = `
-        <div class="grid md:grid-cols-2 gap-3">
-          <div class="rounded-2xl bg-white border border-blue-100 p-3"><div class="text-xs text-slate-500">Estudiantes con emojis</div><div class="text-2xl font-black text-blue-700">${reconocidos}</div></div>
-          <div class="rounded-2xl bg-white border border-blue-100 p-3"><div class="text-xs text-slate-500">Participaciones totales</div><div class="text-2xl font-black text-blue-900">${totalParticipaciones}</div></div>
-        </div>
-      `;
-    }
-
-    async function downloadWofImage(){
-      renderWof();
-      const element = document.getElementById('wofCapture');
-      const canvas = await html2canvas(element, { scale: 2, backgroundColor: null, useCORS: true });
-      const link = document.createElement('a');
-      const course = (document.getElementById('courseName').value || 'curso').toLowerCase().replace(/\s+/g, '-');
-      link.download = 'wof-' + course + '.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    }
-
-    currentDate.textContent = todayText();
-    renderStudents();
-    renderEmojiGrid();
-    generateMessage();
+    boot();
   </script>
 </body>
 </html>
