@@ -1,7 +1,7 @@
 {
   "courses": [
     {
-      "id": "ingles-kids",
+      "id": "ingleskids",
       "name": "Ingles Kids",
       "page": "cursos/ingles-kids.html",
       "allowedEmails": [
