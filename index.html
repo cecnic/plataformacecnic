@@ -1,655 +1,440 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <title>Plataforma Estudiantil · Login</title>
-  <meta name="color-scheme" content="light">
-  <style>
-    :root{
-      --azul:#1d4ed8;
-      --azul-oscuro:#0b1f4d;
-      --azul-medio:#2563eb;
-      --azul-suave:#dbeafe;
-      --azul-claro:#eff6ff;
-      --blanco:#ffffff;
-      --texto:#0f172a;
-      --muted:#5b6b85;
-      --borde:#bfdbfe;
-      --shadow:0 24px 70px rgba(11,31,77,.16);
-      --shadow-soft:0 12px 30px rgba(29,78,216,.10);
-      --ok:#16a34a;
-      --bad:#dc2626;
-      --focus:rgba(37,99,235,.18);
-      --radius:28px;
-      --radius2:22px;
-    }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<title>Plataforma Estudiantil · Login</title>
+<meta name="color-scheme" content="light">
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+<style>
 
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--texto);
-      background:
-        radial-gradient(circle at top left, rgba(59,130,246,.16), transparent 25%),
-        radial-gradient(circle at top right, rgba(29,78,216,.14), transparent 28%),
-        linear-gradient(145deg, #eff6ff 0%, #dbeafe 45%, #eef4ff 100%);
-      overflow:hidden;
-    }
+:root{
+  --azul:#1d4ed8;
+  --azul-oscuro:#0b1f4d;
+  --azul-medio:#2563eb;
+  --azul-suave:#dbeafe;
+  --azul-claro:#eff6ff;
+  --blanco:#ffffff;
+  --texto:#0f172a;
+  --muted:#5b6b85;
+  --borde:#bfdbfe;
+  --shadow:0 24px 70px rgba(11,31,77,.16);
+  --shadow-soft:0 12px 30px rgba(29,78,216,.10);
+  --ok:#16a34a;
+  --bad:#dc2626;
+  --focus:rgba(37,99,235,.18);
+  --radius:28px;
+}
 
-    .bg-dots{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:.22;
-      background-image: radial-gradient(circle, rgba(29,78,216,.35) 1.1px, transparent 1.1px);
-      background-size: 32px 32px;
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), rgba(0,0,0,.35));
-    }
+*{box-sizing:border-box}
 
-    .wrap{
-      min-height:100%;
-      display:grid;
-      place-items:center;
-      padding:18px;
-      position:relative;
-      z-index:1;
-    }
+html,body{
+  min-height:100%;
+}
 
-    .shell{
-      width:min(1280px,100%);
-      background:rgba(255,255,255,.62);
-      border:1px solid rgba(255,255,255,.72);
-      backdrop-filter: blur(10px);
-      border-radius:34px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      animation: riseIn .7s ease;
-    }
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--texto);
 
-    .hero{
-      position:relative;
-      padding:28px;
-      min-height:360px;
-      background:
-        linear-gradient(135deg, #0b1f4d 0%, #163b8e 55%, #1d4ed8 100%);
-      color:#fff;
-      overflow:hidden;
-    }
+  background:
+    radial-gradient(circle at top left, rgba(59,130,246,.16), transparent 25%),
+    radial-gradient(circle at top right, rgba(29,78,216,.14), transparent 28%),
+    linear-gradient(145deg, #eff6ff 0%, #dbeafe 45%, #eef4ff 100%);
 
-    .hero:before{
-      content:"";
-      position:absolute;
-      inset:0;
-      opacity:.22;
-      background-image: radial-gradient(circle, rgba(255,255,255,.45) 1.2px, transparent 1.2px);
-      background-size: 32px 32px;
-    }
+  overflow-x:hidden;
+  overflow-y:auto;
+}
 
-    .hero-glow-1,
-    .hero-glow-2{
-      position:absolute;
-      border-radius:999px;
-      filter: blur(30px);
-      opacity:.18;
-      pointer-events:none;
-    }
+.bg-dots{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.22;
+  background-image: radial-gradient(circle, rgba(29,78,216,.35) 1.1px, transparent 1.1px);
+  background-size:32px 32px;
+}
 
-    .hero-glow-1{
-      width:320px;height:320px;
-      background:#60a5fa;
-      top:-80px;left:-60px;
-      animation: floaty 8s ease-in-out infinite;
-    }
+.wrap{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+}
 
-    .hero-glow-2{
-      width:280px;height:280px;
-      background:#93c5fd;
-      right:-80px;bottom:-80px;
-      animation: floaty 10s ease-in-out infinite reverse;
-    }
+.shell{
+  width:min(1280px,100%);
+  background:rgba(255,255,255,.62);
+  border:1px solid rgba(255,255,255,.72);
+  backdrop-filter: blur(10px);
+  border-radius:34px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    .hero-grid{
-      position:relative;
-      z-index:1;
-      display:grid;
-      grid-template-columns: 1.2fr .72fr;
-      gap:28px;
-      align-items:center;
-    }
+/* HERO */
 
-    @media (max-width: 980px){
-      .hero-grid{grid-template-columns:1fr}
-      .hero{min-height:auto}
-    }
+.hero{
+  padding:32px;
+  background:linear-gradient(135deg,#0b1f4d,#1d4ed8);
+  color:white;
+}
 
-    .hero-left{
-      padding:6px 6px 6px 14px;
-      animation: slideLeft .7s ease;
-    }
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.2fr .7fr;
+  gap:26px;
+}
 
-    .mini-brand{
-      letter-spacing:.5em;
-      font-size:12px;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.9);
-      margin:0 0 10px 0;
-    }
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr}
+}
 
-    .hero-title{
-      margin:0;
-      font-size: clamp(44px, 7vw, 70px);
-      line-height:.94;
-      font-weight:900;
-      letter-spacing:-.04em;
-      text-shadow: 0 8px 30px rgba(0,0,0,.14);
-    }
+.hero-title{
+  font-size:56px;
+  font-weight:900;
+  line-height:.95;
+}
 
-    .hero-sub{
-      margin:18px 0 0 0;
-      font-size:16px;
-      color:rgba(255,255,255,.92);
-      max-width:650px;
-    }
+.hero-sub{
+  margin-top:16px;
+  font-size:16px;
+  opacity:.9;
+}
 
-    .hero-right{
-      border:1px solid rgba(255,255,255,.18);
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.06));
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
-      border-radius:34px;
-      padding:24px;
-      animation: slideRight .8s ease;
-    }
+.hero-right{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);
+  padding:22px;
+  border-radius:26px;
+}
 
-    .hero-label{
-      color:rgba(255,255,255,.92);
-      font-size:14px;
-      margin-bottom:12px;
-    }
+.hero-course{
+  width:100%;
+  padding:16px;
+  border-radius:18px;
+  border:none;
+  background:white;
+  font-size:18px;
+}
 
-    .hero-course{
-      width:100%;
-      border:0;
-      border-radius:22px;
-      padding:16px 18px;
-      font-size:18px;
-      background:#fff;
-      color:var(--texto);
-      outline:none;
-      box-shadow: 0 10px 25px rgba(0,0,0,.10);
-    }
+.hero-info{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
 
-    .hero-info{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-      margin-top:14px;
-    }
+.hero-box{
+  padding:16px;
+  border-radius:20px;
+  background:rgba(255,255,255,.1);
+}
 
-    .hero-box{
-      border-radius:22px;
-      padding:16px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.16);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
-    }
+.hero-box strong{
+  display:block;
+  font-size:18px;
+}
 
-    .hero-box small{
-      display:block;
-      color:rgba(255,255,255,.86);
-      font-size:13px;
-      margin-bottom:8px;
-    }
+/* CONTENT */
 
-    .hero-box strong{
-      display:block;
-      color:#fff;
-      font-size:18px;
-      line-height:1.2;
-    }
+.content{
+  padding:26px;
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:20px;
+}
 
-    .content{
-      padding:24px;
-      display:grid;
-      grid-template-columns: 1fr 430px;
-      gap:20px;
-      background:linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.08));
-    }
+@media (max-width:980px){
+  .content{grid-template-columns:1fr}
+}
 
-    @media (max-width: 980px){
-      .content{grid-template-columns:1fr}
-    }
+.panel{
+  background:white;
+  border-radius:28px;
+  padding:24px;
+  border:1px solid var(--borde);
+}
 
-    .panel{
-      background:rgba(255,255,255,.72);
-      border:1px solid rgba(255,255,255,.72);
-      border-radius:30px;
-      padding:24px;
-      box-shadow:var(--shadow-soft);
-      backdrop-filter: blur(10px);
-      animation: fadeUp .8s ease;
-    }
+.panel h2{
+  margin:0;
+  font-size:32px;
+  font-weight:900;
+}
 
-    .panel h2{
-      margin:0;
-      font-size:32px;
-      font-weight:900;
-      letter-spacing:-.03em;
-      background: linear-gradient(90deg, var(--azul-oscuro), var(--azul));
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-    }
+.feature-grid{
+  margin-top:18px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
 
-    .panel p{
-      margin:10px 0 0 0;
-      color:var(--muted);
-      line-height:1.6;
-    }
+@media (max-width:680px){
+  .feature-grid{grid-template-columns:1fr}
+}
 
-    .feature-grid{
-      margin-top:20px;
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:14px;
-    }
+.feature{
+  padding:18px;
+  border-radius:22px;
+  background:linear-gradient(180deg,#fff,#f6faff);
+  border:1px solid var(--borde);
+}
 
-    @media (max-width: 680px){
-      .feature-grid{grid-template-columns:1fr}
-    }
+.icon{
+  width:50px;
+  height:50px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#1d4ed8,#0b1f4d);
+  color:white;
+  font-size:20px;
+  margin-bottom:10px;
+}
 
-    .feature{
-      border-radius:24px;
-      padding:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(239,246,255,.95));
-      border:1px solid var(--borde);
-      box-shadow:0 8px 24px rgba(37,99,235,.08);
-      transition:transform .18s ease, box-shadow .18s ease;
-    }
+/* LOGIN */
 
-    .feature:hover{
-      transform:translateY(-3px);
-      box-shadow:0 16px 36px rgba(37,99,235,.12);
-    }
+.login-card{
+  background:white;
+  border-radius:28px;
+  padding:24px;
+  border:1px solid var(--borde);
+}
 
-    .feature .icon{
-      width:50px;height:50px;
-      border-radius:18px;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(135deg, #1d4ed8, #0b1f4d);
-      color:#fff;
-      font-size:22px;
-      box-shadow:0 14px 28px rgba(29,78,216,.18);
-      margin-bottom:12px;
-    }
+.login-title{
+  font-size:28px;
+  font-weight:900;
+}
 
-    .feature strong{
-      display:block;
-      font-size:16px;
-      margin-bottom:6px;
-      color:#102042;
-    }
+.field{
+  margin-top:14px;
+}
 
-    .feature span{
-      color:#5d6e8e;
-      font-size:14px;
-      line-height:1.45;
-    }
+.field label{
+  font-size:12px;
+  font-weight:900;
+}
 
-    .login-card{
-      background:
-        linear-gradient(155deg, rgba(255,255,255,.98), rgba(239,246,255,.96)),
-        linear-gradient(135deg, rgba(29,78,216,.04), rgba(11,31,77,.08));
-      border:1px solid var(--borde);
-      border-radius:30px;
-      padding:24px;
-      box-shadow:0 20px 48px rgba(11,31,77,.10);
-      animation: fadeUp .9s ease;
-    }
+.input{
+  width:100%;
+  margin-top:6px;
+  padding:14px;
+  border-radius:16px;
+  border:1px solid var(--borde);
+}
 
-    .login-title{
-      margin:0;
-      font-size:30px;
-      font-weight:900;
-      letter-spacing:-.03em;
-      color:var(--azul-oscuro);
-    }
+.input:focus{
+  border-color:#60a5fa;
+  box-shadow:0 0 0 4px var(--focus);
+  outline:none;
+}
 
-    .login-sub{
-      margin:8px 0 18px 0;
-      color:var(--muted);
-      line-height:1.5;
-    }
+.login-row{
+  margin-top:18px;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
 
-    .field{
-      display:grid;
-      gap:8px;
-      margin-bottom:14px;
-    }
+.btn{
+  border:none;
+  padding:14px 18px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#1d4ed8,#0b1f4d);
+  color:white;
+  font-weight:900;
+  cursor:pointer;
+}
 
-    .field label{
-      font-size:12px;
-      font-weight:800;
-      letter-spacing:.16em;
-      color:#36507f;
-    }
+.chip{
+  padding:6px 12px;
+  border-radius:999px;
+  background:white;
+  border:1px solid var(--borde);
+  font-weight:900;
+}
 
-    .input{
-      width:100%;
-      padding:15px 16px;
-      border-radius:18px;
-      border:1px solid var(--borde);
-      background:#fff;
-      color:var(--texto);
-      outline:none;
-      font-size:15px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.65);
-      transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;
-    }
+.msg{
+  margin-top:14px;
+  font-weight:700;
+}
 
-    .input:focus{
-      border-color:#60a5fa;
-      box-shadow:0 0 0 5px var(--focus);
-      transform:translateY(-1px);
-    }
+.msg.good{color:var(--ok)}
+.msg.bad{color:var(--bad)}
 
-    .login-row{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      margin-top:16px;
-    }
-
-    .btn{
-      cursor:pointer;
-      border:0;
-      min-width:160px;
-      padding:14px 18px;
-      border-radius:18px;
-      background:linear-gradient(135deg, #1d4ed8, #0b1f4d);
-      color:#fff;
-      font-weight:900;
-      letter-spacing:.02em;
-      box-shadow:0 18px 38px rgba(29,78,216,.20);
-      transition:transform .15s ease, filter .15s ease, box-shadow .15s ease;
-    }
-
-    .btn:hover{
-      transform:translateY(-2px);
-      filter:brightness(1.03);
-      box-shadow:0 22px 44px rgba(29,78,216,.24);
-    }
-
-    .btn:active{transform:translateY(0)}
-
-    .mini{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      color:#47628e;
-      font-size:13px;
-      font-weight:700;
-    }
-
-    .chip{
-      padding:7px 12px;
-      border-radius:999px;
-      background:#fff;
-      border:1px solid var(--borde);
-      color:#264578;
-      font-weight:900;
-      box-shadow:0 6px 16px rgba(37,99,235,.08);
-    }
-
-    .msg{
-      margin-top:14px;
-      min-height:20px;
-      font-size:14px;
-      font-weight:700;
-      color:#35517f;
-    }
-
-    .msg.good{color:var(--ok)}
-    .msg.bad{color:var(--bad)}
-
-    .floating-card{
-      margin-top:18px;
-      padding:16px;
-      border-radius:22px;
-      background:linear-gradient(180deg, #ffffff, #f6faff);
-      border:1px solid var(--borde);
-      box-shadow:0 12px 26px rgba(37,99,235,.08);
-      animation: floaty 7s ease-in-out infinite;
-    }
-
-    .floating-card strong{
-      display:block;
-      color:#163b8e;
-      margin-bottom:6px;
-    }
-
-    .floating-card span{
-      color:#5c6d8c;
-      font-size:14px;
-      line-height:1.5;
-    }
-
-    @keyframes riseIn{
-      from{opacity:0; transform:translateY(16px) scale(.985)}
-      to{opacity:1; transform:translateY(0) scale(1)}
-    }
-
-    @keyframes slideLeft{
-      from{opacity:0; transform:translateX(-18px)}
-      to{opacity:1; transform:translateX(0)}
-    }
-
-    @keyframes slideRight{
-      from{opacity:0; transform:translateX(18px)}
-      to{opacity:1; transform:translateX(0)}
-    }
-
-    @keyframes fadeUp{
-      from{opacity:0; transform:translateY(18px)}
-      to{opacity:1; transform:translateY(0)}
-    }
-
-    @keyframes floaty{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-8px)}
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="bg-dots"></div>
 
-  <div class="wrap">
-    <div class="shell">
-      <section class="hero">
-        <div class="hero-glow-1"></div>
-        <div class="hero-glow-2"></div>
+<div class="bg-dots"></div>
 
-        <div class="hero-grid">
-          <div class="hero-left">
-            <p class="mini-brand">CECNIC</p>
-            <h1 class="hero-title">PLATAFORMA<br>ESTUDIANTIL</h1>
-            <p class="hero-sub">Acceso a cursos, avisos, documentos y recursos del centro.</p>
-          </div>
+<div class="wrap">
 
-          <div class="hero-right">
-            <div class="hero-label">Bienvenido a nuestra Webpage</div>
-            <input id="courseName" class="hero-course" value="Bienvenido al login.">
+<div class="shell">
 
-            <div class="hero-info">
-              <div class="hero-box">
-                <small>Fecha</small>
-                <strong id="currentDate"></strong>
-              </div>
-              <div class="hero-box">
-                <small>Usuarios</small>
-                <strong id="usersCountHero">0 cargados</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+<section class="hero">
 
-      <section class="content">
-        <div class="panel">
-          <h2>Bienvenidos</h2>
-          <p>Espacio académico para el acceso ordenado a materiales, avisos y herramientas del curso.</p>
+<div class="hero-grid">
 
-          <div class="feature-grid">
-            <div class="feature">
-              <div class="icon">📘</div>
-              <strong>Cursos</strong>
-              <span>Materiales y recursos disponibles para cada asignatura.</span>
-            </div>
+<div>
 
-            <div class="feature">
-              <div class="icon">📢</div>
-              <strong>Avisos</strong>
-              <span>Información importante y comunicados del centro.</span>
-            </div>
+<h1 class="hero-title">PLATAFORMA<br>ESTUDIANTIL</h1>
 
-            <div class="feature">
-              <div class="icon">🧾</div>
-              <strong>Documentos</strong>
-              <span>Acceso organizado a contenidos y archivos del curso.</span>
-            </div>
-          </div>
+<p class="hero-sub">
+Acceso a cursos, avisos, documentos y recursos del centro.
+</p>
 
-          <div class="floating-card">
-            <strong>Centro de Estudios Computarizados Nicaragüense</strong>
-            <span>Ingreso seguro a la plataforma educativa del centro.</span>
-          </div>
-        </div>
+</div>
 
-        <div class="login-card">
-          <h1 class="login-title">Iniciar sesión</h1>
-          <p class="login-sub">Ingrese su correo y contraseña para continuar.</p>
+<div class="hero-right">
 
-          <div class="field">
-            <label for="email">CORREO</label>
-            <input id="email" class="input" placeholder="alumno@cecnic.com" autocomplete="username">
-          </div>
+<div>Bienvenido</div>
 
-          <div class="field">
-            <label for="pass">CONTRASEÑA</label>
-            <input id="pass" class="input" type="password" placeholder="••••••••" autocomplete="current-password">
-          </div>
+<input class="hero-course" value="Bienvenido al login">
 
-          <div class="login-row">
-            <button id="loginBtn" class="btn" type="button">Entrar</button>
+<div class="hero-info">
 
-            <div class="mini">
-              <span class="chip" id="statusChip">Cargando...</span>
-              <span id="usersInfo"></span>
-            </div>
-          </div>
+<div class="hero-box">
+<small>Fecha</small>
+<strong id="currentDate"></strong>
+</div>
 
-          <div id="msg" class="msg"></div>
-        </div>
-      </section>
-    </div>
-  </div>
+<div class="hero-box">
+<small>Usuarios</small>
+<strong id="usersCountHero">0</strong>
+</div>
 
-  <script>
-    const $ = (id)=>document.getElementById(id);
+</div>
 
-    if(localStorage.getItem("session_email")) location.href="dashboard.html";
+</div>
 
-    function formatDate(){
-      return new Date().toLocaleDateString("es-NI", {
-        day:"numeric",
-        month:"long",
-        year:"numeric"
-      });
-    }
+</div>
 
-    $("currentDate").textContent = formatDate();
+</section>
 
-    function setMsg(t,type=""){
-      $("msg").textContent = t || "";
-      $("msg").className = "msg" + (type ? " " + type : "");
-    }
+<section class="content">
 
-    async function loadUsers(){
-      const r = await fetch("apartado.json",{ cache:"no-store" });
-      if(!r.ok) throw new Error("apartado.json");
-      const d = await r.json();
-      return d.users || [];
-    }
+<div class="panel">
 
-    async function boot(){
-      try{
-        const users = await loadUsers();
-        $("statusChip").textContent = "Online";
-        $("usersInfo").textContent = `Usuarios cargados: ${users.length}`;
-        $("usersCountHero").textContent = `${users.length} cargados`;
-      }catch{
-        $("statusChip").textContent = "Offline";
-        $("usersInfo").textContent = "";
-        $("usersCountHero").textContent = "Sin conexión";
-      }
-    }
+<h2>Bienvenidos</h2>
 
-    async function login(){
-      const email = $("email").value.trim().toLowerCase();
-      const pass  = $("pass").value;
+<div class="feature-grid">
 
-      if(!email || !pass){
-        setMsg("Faltan datos.","bad");
-        return;
-      }
+<div class="feature">
+<div class="icon">📘</div>
+<strong>Cursos</strong>
+<span>Materiales y recursos del curso.</span>
+</div>
 
-      setMsg("Verificando...");
-      $("statusChip").textContent = "Cargando...";
+<div class="feature">
+<div class="icon">📢</div>
+<strong>Avisos</strong>
+<span>Información importante del centro.</span>
+</div>
 
-      let users = [];
-      try{
-        users = await loadUsers();
-        $("statusChip").textContent = "Online";
-        $("usersInfo").textContent = `Usuarios cargados: ${users.length}`;
-        $("usersCountHero").textContent = `${users.length} cargados`;
-      }catch{
-        setMsg("No se pudo leer apartado.json.","bad");
-        $("statusChip").textContent = "Offline";
-        $("usersInfo").textContent = "";
-        $("usersCountHero").textContent = "Sin conexión";
-        return;
-      }
+<div class="feature">
+<div class="icon">🧾</div>
+<strong>Documentos</strong>
+<span>Acceso a contenidos y archivos.</span>
+</div>
 
-      const u = users.find(x =>
-        String(x.email || "").toLowerCase() === email &&
-        String(x.pass  || "") === String(pass)
-      );
+</div>
 
-      if(!u){
-        setMsg("Credenciales incorrectas.","bad");
-        return;
-      }
+</div>
 
-      localStorage.setItem("session_email", email);
-      localStorage.setItem("session_role", u.role || "estudiante");
-      localStorage.setItem("session_name", u.name || email);
+<div class="login-card">
 
-      setMsg("Entrando...","good");
-      setTimeout(()=>location.href="dashboard.html", 250);
-    }
+<h1 class="login-title">Iniciar sesión</h1>
 
-    $("loginBtn").onclick = login;
-    $("pass").addEventListener("keydown",(e)=>{ if(e.key==="Enter") login(); });
-    $("email").addEventListener("keydown",(e)=>{ if(e.key==="Enter") login(); });
+<div class="field">
+<label>CORREO</label>
+<input id="email" class="input">
+</div>
 
-    boot();
-  </script>
+<div class="field">
+<label>CONTRASEÑA</label>
+<input id="pass" class="input" type="password">
+</div>
+
+<div class="login-row">
+
+<button id="loginBtn" class="btn">Entrar</button>
+
+<div>
+<span class="chip" id="statusChip">Cargando...</span>
+<span id="usersInfo"></span>
+</div>
+
+</div>
+
+<div id="msg" class="msg"></div>
+
+</div>
+
+</section>
+
+</div>
+
+</div>
+
+<script>
+
+const $ = (id)=>document.getElementById(id);
+
+function formatDate(){
+return new Date().toLocaleDateString("es-NI",{day:"numeric",month:"long",year:"numeric"});
+}
+
+$("currentDate").textContent=formatDate();
+
+async function loadUsers(){
+const r=await fetch("apartado.json",{cache:"no-store"});
+const d=await r.json();
+return d.users||[];
+}
+
+async function boot(){
+try{
+const users=await loadUsers();
+$("statusChip").textContent="Online";
+$("usersInfo").textContent=`Usuarios cargados: ${users.length}`;
+$("usersCountHero").textContent=users.length;
+}catch{
+$("statusChip").textContent="Offline";
+}
+}
+
+async function login(){
+
+const email=$("email").value.trim().toLowerCase();
+const pass=$("pass").value;
+
+const users=await loadUsers();
+
+const u=users.find(x=>x.email.toLowerCase()==email && x.pass==pass);
+
+if(!u){
+$("msg").textContent="Credenciales incorrectas";
+$("msg").className="msg bad";
+return;
+}
+
+localStorage.setItem("session_email",email);
+localStorage.setItem("session_role",u.role||"estudiante");
+
+location.href="dashboard.html";
+
+}
+
+$("loginBtn").onclick=login;
+
+boot();
+
+</script>
+
 </body>
 </html>
