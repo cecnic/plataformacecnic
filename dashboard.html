@@ -791,7 +791,7 @@
     list.forEach(c=>{
       const a=document.createElement("a");
       a.className="courseLink";
-      a.href = c.page;
+      a.href = c.page + "?course=" + c.id;
       a.innerHTML = `${capSvg()}<div class="courseText"><b>${esc(c.name)}</b></div>`;
       wrap.appendChild(a);
     });
