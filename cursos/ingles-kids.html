@@ -3,182 +3,355 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Ingles Kids</title>
-<meta name="color-scheme" content="dark light">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<title>Curso Inglés Kids</title>
+<meta name="color-scheme" content="light">
 <style>
 :root{
-  --bg1:#070b16; --bg2:#0b1633;
-  --glass:rgba(255,255,255,.10);
-  --glass2:rgba(255,255,255,.14);
-  --stroke:rgba(255,255,255,.16);
-  --text:rgba(255,255,255,.92);
-  --muted:rgba(255,255,255,.70);
-  --shadow:0 25px 70px rgba(0,0,0,.45);
-  --radius:22px;
-  --ok:rgba(60,255,160,.85);
-  --bad:rgba(255,90,110,.9);
+  --azul:#1d4ed8;
+  --azul-oscuro:#0b1f4d;
+  --azul-suave:#dbeafe;
+  --blanco:#ffffff;
+  --borde:#bfdbfe;
+  --texto:#0f172a;
+  --muted:#60708e;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --shadow:0 20px 60px rgba(11,31,77,.18);
 }
+
 *{box-sizing:border-box}
+html,body{min-height:100%}
+
 body{
   margin:0;
-  font-family:system-ui,Segoe UI,Roboto,Arial;
-  color:var(--text);
+  font-family:Inter,system-ui,sans-serif;
   background:
-    radial-gradient(1200px 700px at 20% 15%, rgba(120,140,255,.35), transparent 55%),
-    radial-gradient(1100px 650px at 85% 25%, rgba(255,110,190,.22), transparent 60%),
-    radial-gradient(900px 600px at 50% 95%, rgba(90,255,210,.16), transparent 55%),
-    linear-gradient(160deg,var(--bg1),var(--bg2));
-  padding:16px;
+    radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 25%),
+    radial-gradient(circle at top right, rgba(29,78,216,.18), transparent 28%),
+    linear-gradient(145deg, #eff6ff 0%, #dbeafe 45%, #eef4ff 100%);
+  color:var(--texto);
+  overflow-x:hidden;
+  overflow-y:auto;
 }
-.wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
-.top{
-  border-radius:var(--radius);
-  background:linear-gradient(180deg,var(--glass2),var(--glass));
-  border:1px solid var(--stroke);
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(16px);
-  padding:14px 14px;
+
+.wrap{
+  max-width:1280px;
+  margin:0 auto;
+  padding:16px;
   display:flex;
-  align-items:center;
+  flex-direction:column;
+  gap:18px;
+  min-height:100vh;
+}
+
+.glass{
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.6);
+  box-shadow:var(--shadow);
+}
+
+.panel-title{
+  background:linear-gradient(90deg, var(--azul-oscuro), var(--azul));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.top{
+  position:relative;
+  overflow:hidden;
+  border-radius:30px;
+  padding:26px;
+  background:linear-gradient(135deg, #0b1f4d 0%, #163b8e 55%, #1d4ed8 100%);
+  color:#fff;
+}
+.top::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.20;
+  background-image: radial-gradient(circle at 20% 20%, white 1px, transparent 1px);
+  background-size:26px 26px;
+}
+.top-inner{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:flex-start;
   justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.roundBack{
+  width:46px;
+  height:46px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.20);
+  cursor:pointer;
+  font-weight:900;
+  font-size:18px;
+  transition:transform .15s ease;
+}
+.roundBack:hover{transform:translateY(-2px)}
+
+.title b{
+  display:block;
+  font-size:32px;
+  font-weight:1000;
+  letter-spacing:-.03em;
+}
+.title span{
+  display:block;
+  color:rgba(255,255,255,.85);
+  font-size:14px;
+  margin-top:8px;
+}
+
+.btn{
+  border:none;
+  cursor:pointer;
+  padding:12px 14px;
+  border-radius:16px;
+  font-weight:900;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+
+.btn{
+  background:linear-gradient(135deg, #1d4ed8, #0b1f4d);
+  color:#fff;
+  box-shadow:0 18px 38px rgba(29,78,216,.20);
+}
+.btn.ghost{
+  background:#fff;
+  color:#264578;
+  border:1px solid var(--borde);
+  box-shadow:0 8px 18px rgba(37,99,235,.07);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  align-items:start;
+}
+
+.panel{
+  border-radius:28px;
+  overflow:hidden;
+}
+
+.head{
+  padding:16px 18px;
+  border-bottom:1px solid rgba(191,219,254,.8);
+  background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(239,246,255,.75));
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   gap:10px;
   flex-wrap:wrap;
 }
-.title b{display:block;font-size:16px}
-.title span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
-.roundBack{
-  width:42px;height:42px;border-radius:999px;
-  display:grid;place-items:center;
-  background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.14);
-  cursor:pointer;
+.head b{
+  font-size:26px;
+  font-weight:1000;
+  letter-spacing:-.03em;
 }
-.btn{
-  border:none; cursor:pointer;
-  padding:10px 12px;
-  border-radius:14px;
-  font-weight:900;
-  color:#0b0f1a;
-  background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.70));
+.head span{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
 }
-.btn.ghost{
-  background:rgba(255,255,255,.08);
-  color:rgba(255,255,255,.86);
-  border:1px solid rgba(255,255,255,.14);
+
+.body{
+  padding:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,.15));
 }
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
+
+.list{
+  display:flex;
+  flex-direction:column;
   gap:14px;
-  align-items:start;
 }
-.panel{
-  border-radius:var(--radius);
-  background:linear-gradient(180deg,var(--glass2),var(--glass));
-  border:1px solid var(--stroke);
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(16px);
-  overflow:hidden;
-}
-.head{
-  padding:12px 14px;
-  border-bottom:1px solid rgba(255,255,255,.10);
-  background:rgba(0,0,0,.18);
-  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
-}
-.head b{font-size:14px}
-.body{padding:14px}
-.list{display:flex;flex-direction:column;gap:10px}
+
 .card{
-  padding:12px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.14);
+  padding:16px;
+  border-radius:24px;
+  border:1px solid var(--borde);
+  background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(239,246,255,.95));
+  box-shadow:0 12px 28px rgba(37,99,235,.08);
   cursor:pointer;
-  transition:transform .15s ease, background .15s ease;
+  transition:transform .16s ease, box-shadow .16s ease;
 }
-.card:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
-.card b{display:block;font-size:13px}
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 20px 34px rgba(37,99,235,.11);
+}
+.card b{
+  display:block;
+  font-size:16px;
+  font-weight:900;
+  color:var(--azul-oscuro);
+}
 .card span{
   display:-webkit-box;
-  -webkit-line-clamp:2;
+  -webkit-line-clamp:3;
   -webkit-box-orient:vertical;
   overflow:hidden;
-  margin-top:6px;
+  margin-top:8px;
   color:var(--muted);
-  font-size:12px;
-  line-height:1.35;
+  font-size:13px;
+  line-height:1.5;
 }
-.status{font-size:12px;color:var(--muted);min-height:16px;margin-top:10px}
-.status.ok{color:var(--ok)} .status.bad{color:var(--bad)}
+
+.status{
+  font-size:13px;
+  color:var(--muted);
+  min-height:18px;
+  margin-top:12px;
+  font-weight:700;
+}
+.status.ok{color:var(--success)}
+.status.bad{color:var(--danger)}
 
 .modal{
-  position:fixed; inset:0;
-  display:none; place-items:center;
-  background: rgba(0,0,0,.60);
-  backdrop-filter: blur(10px);
+  position:fixed;
+  inset:0;
+  display:none;
+  place-items:center;
+  background:rgba(15,23,42,.42);
+  backdrop-filter:blur(8px);
   padding:18px;
+  z-index:50;
 }
 .modal.show{display:grid}
+
 .paper{
   width:min(980px, 100%);
-  max-height: 86vh;
+  max-height:86vh;
   overflow:auto;
-  border-radius: 22px;
-  border:1px solid rgba(255,255,255,.14);
-  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.7);
+  background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(239,246,255,.96));
+  box-shadow:0 30px 90px rgba(11,31,77,.22);
 }
+
 .paperTop{
-  position:sticky; top:0;
-  padding:12px 14px;
-  background: rgba(0,0,0,.28);
-  border-bottom:1px solid rgba(255,255,255,.10);
-  display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+  position:sticky;
+  top:0;
+  padding:14px 16px;
+  background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(239,246,255,.95));
+  border-bottom:1px solid var(--borde);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  z-index:2;
 }
-.paperBody{padding:16px; white-space:pre-wrap; line-height:1.55}
+.paperTop b{
+  color:var(--azul-oscuro);
+  font-size:18px;
+}
+
+.paperBody{
+  padding:20px;
+  white-space:pre-wrap;
+  line-height:1.65;
+  color:var(--texto);
+}
+
 .input,.area{
-  width:100%; padding:12px 14px; border-radius:14px;
-  border:1px solid rgba(255,255,255,.16);
-  background: rgba(255,255,255,.06);
-  color:var(--text); outline:none;
+  width:100%;
+  padding:14px 16px;
+  border-radius:18px;
+  border:1px solid var(--borde);
+  background:#fff;
+  color:var(--texto);
+  outline:none;
+  transition:border-color .18s ease, box-shadow .18s ease;
+  font-size:15px;
 }
-.area{min-height:140px; resize:vertical}
-.sep{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+.input:focus,.area:focus{
+  border-color:#60a5fa;
+  box-shadow:0 0 0 5px rgba(37,99,235,.18);
+}
+.area{
+  min-height:160px;
+  resize:vertical;
+}
+
+.sep{
+  height:1px;
+  background:rgba(191,219,254,.9);
+  margin:18px 0;
+}
+
 .comment{
-  padding:10px 12px;
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.14);
+  padding:12px 14px;
+  border-radius:18px;
+  border:1px solid var(--borde);
+  background:#fff;
+  box-shadow:0 8px 20px rgba(37,99,235,.06);
 }
-.comment b{display:block;font-size:12px}
-.comment span{display:block;color:var(--muted);font-size:12px;margin-top:6px;white-space:pre-wrap}
-@media (max-width:980px){ .grid{grid-template-columns:1fr} }
+.comment b{
+  display:block;
+  font-size:13px;
+  color:var(--azul-oscuro);
+}
+.comment span{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:8px;
+  white-space:pre-wrap;
+  line-height:1.5;
+}
+
+@media (max-width:980px){
+  .grid{grid-template-columns:1fr}
+  .top-inner{flex-direction:column}
+  .title b{font-size:28px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="top">
-    <div class="row">
-      <div class="roundBack" id="back" title="Dashboard">←</div>
-      <div class="title">
-        <b id="courseName">Ingles Kids</b>
-        <span id="courseMeta">—</span>
+  <div class="top glass">
+    <div class="top-inner">
+      <div class="row">
+        <div class="roundBack" id="back" title="Dashboard">←</div>
+        <div class="title">
+          <b id="courseName">Curso</b>
+          <span id="courseMeta">—</span>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <button class="btn" id="newAnn" style="display:none">+ Aviso</button>
-      <button class="btn" id="newAct" style="display:none">+ Actividad</button>
+      <div class="row">
+        <button class="btn" id="newAnn" style="display:none">+ Aviso</button>
+        <button class="btn" id="newAct" style="display:none">+ Actividad</button>
+      </div>
     </div>
   </div>
 
   <div class="grid">
-    <section class="panel">
+    <section class="panel glass">
       <div class="head">
-        <b>Avisos</b>
-        <span id="annCount" style="color:rgba(255,255,255,.65);font-size:12px">—</span>
+        <b class="panel-title">Avisos</b>
+        <span id="annCount">—</span>
       </div>
       <div class="body">
         <div class="list" id="annList"></div>
@@ -186,10 +359,10 @@ body{
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel glass">
       <div class="head">
-        <b>Actividades</b>
-        <span id="actCount" style="color:rgba(255,255,255,.65);font-size:12px">—</span>
+        <b class="panel-title">Actividades</b>
+        <span id="actCount">—</span>
       </div>
       <div class="body">
         <div class="list" id="actList"></div>
@@ -213,11 +386,11 @@ body{
 
       <div id="forumArea" style="display:none">
         <div class="sep"></div>
-        <b style="display:block;margin-bottom:10px">Comentarios</b>
-        <div id="cList" style="display:grid;gap:10px"></div>
+        <b style="display:block;margin-bottom:10px;color:#0b1f4d">Comentarios</b>
+        <div id="cList" style="display:grid;gap:12px"></div>
 
         <div class="sep"></div>
-        <textarea class="area" id="cText" placeholder="Escribi un comentario..."></textarea>
+        <textarea class="area" id="cText" placeholder="Escribí un comentario..."></textarea>
         <div class="row" style="margin-top:10px">
           <button class="btn" id="cSend">Comentar</button>
           <div class="status" id="cStatus"></div>
@@ -238,8 +411,9 @@ body{
       </div>
     </div>
     <div class="paperBody">
-      <input class="input" id="annTitle" placeholder="Titulo">
-      <textarea class="area" id="annBody" placeholder="Descripcion..."></textarea>
+      <input class="input" id="annTitle" placeholder="Título">
+      <div style="height:12px"></div>
+      <textarea class="area" id="annBody" placeholder="Descripción..."></textarea>
       <div class="status" id="annSaveStatus"></div>
     </div>
   </div>
@@ -255,8 +429,9 @@ body{
       </div>
     </div>
     <div class="paperBody">
-      <input class="input" id="actTitle" placeholder="Titulo">
-      <textarea class="area" id="actBody" placeholder="Descripcion completa..."></textarea>
+      <input class="input" id="actTitle" placeholder="Título">
+      <div style="height:12px"></div>
+      <textarea class="area" id="actBody" placeholder="Descripción completa..."></textarea>
       <div class="status" id="actSaveStatus"></div>
     </div>
   </div>
@@ -264,43 +439,37 @@ body{
 
 <script type="module">
   const $ = (id)=>document.getElementById(id);
-
-  const email = (localStorage.getItem("session_email") || "").trim().toLowerCase();
-  const role  = (localStorage.getItem("session_role") || "estudiante").trim().toLowerCase();
-  const name  = (localStorage.getItem("session_name") || email).trim();
-
+  const email = (localStorage.getItem("session_email") || "").toLowerCase();
+  const role  = localStorage.getItem("session_role") || "estudiante";
+  const name  = localStorage.getItem("session_name") || email;
   if(!email) location.href="../index.html";
   $("back").onclick=()=>location.href="../dashboard.html";
 
   const canTeacher = ()=> role==="maestro" || role==="administrador";
 
-  const COURSE_ID = "ingles-kids";
+  const params = new URLSearchParams(location.search);
+  const courseId = params.get("course");
+  if(!courseId){ location.href="../dashboard.html"; }
 
   function esc(s){ return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
 
   async function loadCourses(){
-    const url = new URL("../courses.json", window.location.href).toString();
-    const r = await fetch(url + "?v=" + Date.now(), { cache:"no-store" });
-    if(!r.ok) throw new Error("No se pudo leer courses.json: HTTP " + r.status);
-    const d = await r.json();
-    return d.courses || [];
+    const r = await fetch("../courses.json?v="+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw new Error("courses.json");
+    return (await r.json()).courses || [];
   }
 
   const courses = await loadCourses();
-  const course  = courses.find(c => String(c.id).trim() === COURSE_ID);
+  const course = courses.find(c=>c.id===courseId);
+  if(!course){ alert("Curso no registrado"); location.href="../dashboard.html"; }
 
-  if(!course){
-    alert("Curso no registrado en courses.json: " + COURSE_ID);
-    location.href="../dashboard.html";
-  }
-
-  document.title = course.name || "Ingles Kids";
-  $("courseName").textContent = course.name || "Ingles Kids";
+  document.title = course.name;
+  $("courseName").textContent = course.name;
   $("courseMeta").textContent = email + " · " + role;
 
-  const allowed = (course.allowedEmails || []).map(x => String(x).trim().toLowerCase());
+  const allowed = (course.allowedEmails||[]).map(x=>String(x).toLowerCase());
   if(!(canTeacher() || allowed.includes(email))){
-    alert("Sin permiso para este curso: " + email);
+    alert("Sin permiso");
     location.href="../dashboard.html";
   }
 
@@ -309,7 +478,7 @@ body{
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import {
-    getFirestore, collection, addDoc,
+    getFirestore, collection, addDoc, doc,
     query, orderBy, onSnapshot, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -321,12 +490,11 @@ body{
     messagingSenderId: "1053875195363",
     appId: "1:1053875195363:web:57be5f3ff586466ea7a4d6"
   };
-
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
 
-  const annRef = collection(db,"courses",COURSE_ID,"announcements");
-  const actRef = collection(db,"courses",COURSE_ID,"activities");
+  const annRef = collection(db,"courses",courseId,"announcements");
+  const actRef = collection(db,"courses",courseId,"activities");
 
   const show=(m)=>m.classList.add("show");
   const hide=(m)=>m.classList.remove("show");
@@ -337,8 +505,8 @@ body{
   $("annCancel").onclick=()=>hide(annM);
   $("actCancel").onclick=()=>hide(actM);
 
-  // Avisos
   let anns=[];
+  function setAnnStatus(t){ $("annStatus").textContent=t||""; }
   function renderAnns(){
     const wrap=$("annList"); wrap.innerHTML="";
     anns.forEach(a=>{
@@ -354,7 +522,7 @@ body{
       wrap.appendChild(div);
     });
     $("annCount").textContent = anns.length ? anns.length+" aviso(s)" : "—";
-    $("annStatus").textContent = anns.length ? "" : "Avisos y novedades generales";
+    setAnnStatus(anns.length ? "" : "Avisos y novedades generales");
   }
 
   onSnapshot(query(annRef, orderBy("createdAt","desc")),(snap)=>{
@@ -362,8 +530,8 @@ body{
     renderAnns();
   });
 
-  // Actividades
   let acts=[];
+  function setActStatus(t){ $("actStatus").textContent=t||""; }
   function renderActs(){
     const wrap=$("actList"); wrap.innerHTML="";
     acts.forEach(a=>{
@@ -374,7 +542,7 @@ body{
       wrap.appendChild(div);
     });
     $("actCount").textContent = acts.length ? acts.length+" actividad(es)" : "—";
-    $("actStatus").textContent = acts.length ? "" : "No hay actividades todavia";
+    setActStatus(acts.length ? "" : "No hay actividades todavía");
   }
 
   onSnapshot(query(actRef, orderBy("createdAt","desc")),(snap)=>{
@@ -382,41 +550,35 @@ body{
     renderActs();
   });
 
-  // Crear aviso
   $("newAnn").onclick=()=>{
     $("annTitle").value=""; $("annBody").value="";
     $("annSaveStatus").textContent="";
     show(annM);
   };
-
   $("annSave").onclick=async()=>{
     const title=$("annTitle").value.trim();
     const body=$("annBody").value.trim();
-    if(!title||!body){ $("annSaveStatus").textContent="Falta titulo o texto"; return; }
+    if(!title||!body){ $("annSaveStatus").textContent="Falta título o texto"; return; }
     $("annSaveStatus").textContent="Guardando...";
     await addDoc(annRef,{ title, body, authorEmail: email, authorName: name, authorRole: role, createdAt: serverTimestamp() });
     hide(annM);
   };
 
-  // Crear actividad
   $("newAct").onclick=()=>{
     $("actTitle").value=""; $("actBody").value="";
     $("actSaveStatus").textContent="";
     show(actM);
   };
-
   $("actSave").onclick=async()=>{
     const title=$("actTitle").value.trim();
     const body=$("actBody").value.trim();
-    if(!title||!body){ $("actSaveStatus").textContent="Falta titulo o texto"; return; }
+    if(!title||!body){ $("actSaveStatus").textContent="Falta título o texto"; return; }
     $("actSaveStatus").textContent="Guardando...";
     await addDoc(actRef,{ title, body, authorEmail: email, authorName: name, authorRole: role, createdAt: serverTimestamp() });
     hide(actM);
   };
 
-  // Foro comentarios
   let unsubscribeComments=null;
-
   async function openActivity(a){
     $("vTitle").textContent=a.title||"Actividad";
     $("vBody").textContent=a.body||"";
@@ -427,9 +589,8 @@ body{
 
     if(unsubscribeComments) unsubscribeComments();
 
-    const cRef = collection(db,"courses",COURSE_ID,"activities",a.id,"comments");
+    const cRef = collection(db,"courses",courseId,"activities",a.id,"comments");
     const cq = query(cRef, orderBy("createdAt","asc"));
-
     unsubscribeComments = onSnapshot(cq,(snap)=>{
       const list=$("cList"); list.innerHTML="";
       snap.forEach(d=>{
